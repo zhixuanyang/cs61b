@@ -30,17 +30,20 @@ public class NBody {
             P[i].draw();
         }
         StdDraw.enableDoubleBuffering();
-        for(double time = 0; time < T; time += dt){
+        for(double time = 0; time <= T; time += dt){
             double[] xForces = new double[P.length];
             double[] yForces = new double[P.length];
-            for(int i = 0; i < P.length; i++){
-                 xForces[i] = P[i].calcNetForceExertedByX(P);
-                 yForces[i] = P[i].calcNetForceExertedByY(P);
-                 P[i].update(time,xForces[i],yForces[i]);
-                 StdDraw.picture(0, 0, imageToDraw);
-                 P[i].draw();
-                 StdDraw.show();
-                 StdDraw.pause(10);
+            for(int i = 0; i < P.length; i++) {
+                xForces[i] = P[i].calcNetForceExertedByX(P);
+                yForces[i] = P[i].calcNetForceExertedByY(P);
+            }
+            for(int i = 0; i<P.length;i++) {
+                P[i].update(time, xForces[i], yForces[i]);
+                StdDraw.picture(0, 0, imageToDraw);
+                StdDraw.enableDoubleBuffering();
+                P[i].draw();
+                StdDraw.show();
+                StdDraw.pause(10);
             }
         }
         StdOut.printf("%d\n", P.length);
