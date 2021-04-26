@@ -39,12 +39,13 @@ public class NBody {
             }
             for(int i = 0; i<P.length;i++) {
                 P[i].update(time, xForces[i], yForces[i]);
-                StdDraw.picture(0, 0, imageToDraw);
-                StdDraw.enableDoubleBuffering();
-                P[i].draw();
-                StdDraw.show();
-                StdDraw.pause(10);
             }
+            StdDraw.picture(0, 0, imageToDraw);
+            for(int i = 0; i<P.length;i++){
+                P[i].draw();
+            }
+            StdDraw.show();
+            StdDraw.pause(10);
         }
         StdOut.printf("%d\n", P.length);
         StdOut.printf("%.2e\n", radius);
