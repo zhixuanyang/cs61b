@@ -24,7 +24,6 @@ public class NBody {
         double radius = NBody.readRadius(filename);
         Planet[] P = NBody.readPlanets(filename);
         StdDraw.setScale(-radius, radius);
-        StdDraw.clear();
         String imageToDraw = "images/starfield.jpg";
         StdDraw.picture(0, 0, imageToDraw);
         for(int i = 0; i < P.length;i++){
