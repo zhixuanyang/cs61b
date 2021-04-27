@@ -48,7 +48,6 @@ public class NBody {
             StdDraw.show();
             StdDraw.pause(10);
         }
-        StdDraw.show();
         StdOut.printf("%d\n", P.length);
         StdOut.printf("%.2e\n", radius);
         for (int i = 0; i < P.length; i++) {
