@@ -24,13 +24,14 @@ public class NBody {
         double radius = NBody.readRadius(filename);
         Planet[] P = NBody.readPlanets(filename);
         StdDraw.setScale(-radius, radius);
+        StdDraw.clear();
         String imageToDraw = "images/starfield.jpg";
         StdDraw.picture(0, 0, imageToDraw);
         for(int i = 0; i < P.length;i++){
             P[i].draw();
         }
         StdDraw.enableDoubleBuffering();
-        for(double time = 0; time <= T; time += dt){
+        for(double time = 0; time < T; time += dt){
             double[] xForces = new double[P.length];
             double[] yForces = new double[P.length];
             for(int i = 0; i < P.length; i++) {
@@ -47,6 +48,7 @@ public class NBody {
             StdDraw.show();
             StdDraw.pause(10);
         }
+        StdDraw.show();
         StdOut.printf("%d\n", P.length);
         StdOut.printf("%.2e\n", radius);
         for (int i = 0; i < P.length; i++) {
