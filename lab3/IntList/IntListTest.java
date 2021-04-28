@@ -47,7 +47,14 @@ public class IntListTest {
         assertEquals(IntList.of(1, 2, 3), L);
         assertEquals(IntList.of(1, 4, 9), res);
     }
-
+    @Test
+    public void testReverse(){
+        IntList L = IntList.of(1, 2, 3, 4, 5);
+        IntList res = IntList.of(5, 4, 3, 2, 1);
+        assertEquals(res, IntList.reverse(L));
+        assertNotEquals(IntList.of(1, 2, 3, 4, 5), L);
+        assertEquals(null, IntList.reverse(null));
+    }
     @Test
     public void testDcatenate() {
         IntList A = IntList.of(1, 2, 3);
