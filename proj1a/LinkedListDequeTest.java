@@ -53,6 +53,14 @@ public class LinkedListDequeTest {
 		lld1.addLast("back");
 		passed = checkSize(3, lld1.size()) && passed;
 
+
+		lld1.addLast("test1");
+		lld1.addLast("test2");
+
+		lld1.removeFirst();
+		lld1.removeLast();
+		lld1.removeFirst();
+
 		System.out.println("Printing out deque: ");
 		lld1.printDeque();
 
@@ -82,6 +90,6 @@ public class LinkedListDequeTest {
 	public static void main(String[] args) {
 		System.out.println("Running tests.\n");
 		addIsEmptySizeTest();
-		addRemoveTest();
+		//addRemoveTest();
 	}
 } 

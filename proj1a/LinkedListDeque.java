@@ -1,11 +1,11 @@
 //import java.util.Deque;
 
-public class LinkedListDeque<Any> {
-    public static class DequeNode<Any> {
-        private Any item;
+public class LinkedListDeque<T> {
+    public static class DequeNode<T> {
+        private T item;
         private DequeNode prev;
         private DequeNode next;
-        public DequeNode(DequeNode p, Any i, DequeNode n) {
+        public DequeNode(DequeNode p, T i, DequeNode n) {
             prev = p;
             item = i;
             next = n;
@@ -21,12 +21,12 @@ public class LinkedListDeque<Any> {
         sentinel.prev = sentinel;
         size = 0;
     }
-    public void addFirst(Any x) {
+    public void addFirst(T x) {
         sentinel.next = new DequeNode(sentinel, x, sentinel.next);
         sentinel.next.next.prev = sentinel.next;
         size += 1;
     }
-    public void addLast(Any x) {
+    public void addLast(T x) {
         sentinel.prev = new DequeNode(sentinel.prev, x, sentinel);
         sentinel.prev.prev.next = sentinel.prev;
         size += 1;
@@ -51,29 +51,29 @@ public class LinkedListDeque<Any> {
         System.out.println();
     }
 
-    public Any removeFirst() {
+    public T removeFirst() {
         if (sentinel.next == sentinel) {
             return null;
         }
-        Any result = (Any) sentinel.next.item;
-        sentinel.next.next.prev = sentinel;
-        sentinel.next = sentinel;
+        T result = (T) sentinel.next.item;
+        sentinel.next = sentinel.next.next;
+        sentinel.next.prev = null;
         size -= 1;
         return result;
     }
 
-    public Any removeLast() {
+    public T removeLast() {
         if (sentinel.prev == sentinel) {
             return null;
         }
-        Any result = (Any) sentinel.prev.item;
-        sentinel.prev.prev.next = sentinel;
-        sentinel.prev = sentinel;
+        T result = (T) sentinel.prev.item;
+        sentinel.prev = sentinel.prev.prev;
+        sentinel.prev.next = null;
         size -= 1;
         return result;
     }
 
-    public Any get(int index) {
+    public T get(int index) {
         DequeNode temp = sentinel;
         for (int i = 0; i < index + 1; i++) {
             temp = temp.next;
@@ -81,14 +81,14 @@ public class LinkedListDeque<Any> {
         if (temp == null || temp.next == null) {
             return null;
         }
-        return (Any) temp.item;
+        return (T) temp.item;
     }
-    public Any getRecursive(int index) {
+    public T getRecursive(int index) {
         return recursiveHelper(sentinel, index, 0);
     }
-    private Any recursiveHelper(DequeNode node, int index, int i) {
+    private T recursiveHelper(DequeNode node, int index, int i) {
         if (i == index + 1) {
-            return (Any) node.item;
+            return (T) node.item;
         }
         return recursiveHelper(node.next, index, i + 1);
     }
