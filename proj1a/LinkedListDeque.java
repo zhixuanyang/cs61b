@@ -1,7 +1,7 @@
 //import java.util.Deque;
 
 public class LinkedListDeque<T> {
-    public static class DequeNode<T> {
+    private static class DequeNode<T> {
         private T item;
         private DequeNode prev;
         private DequeNode next;
