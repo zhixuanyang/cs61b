@@ -75,6 +75,8 @@ public class LinkedListDeque<T> {
         size -= 1;
         if (size == 0) {
             sentinel.next = sentinel;
+        } else if (size == 1) {
+            sentinel.prev.next = sentinel;
         }
         return result;
     }

@@ -67,11 +67,10 @@ public class LinkedListDequeTest {
 		printTestStatus(passed);/*
 		 */
 		LinkedListDeque<Integer> lld1 = new LinkedListDeque<Integer>();
-		lld1.isEmpty();
-		lld1.isEmpty();
-		lld1.addLast(2);
+		lld1.addLast(0);
+		lld1.addLast(1);
 		lld1.removeLast();
-		lld1.isEmpty();
+		lld1.removeLast();
 	}
 
 	/** Adds an item, then removes an item, and ensures that dll is empty afterwards. */
