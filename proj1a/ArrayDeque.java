@@ -32,9 +32,9 @@ public class ArrayDeque<T> {
         if (isEmpty()) {
             return null;
         } else if (lastindex == 0) {
-            return item[item.length - 1];
+            return item[item.length - 1 + index];
         } else if (firstindex == item.length - 1) {
-            return item[0];
+            return item[0 + index];
         } else {
             return item[firstindex + index + 1];
         }
