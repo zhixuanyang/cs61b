@@ -38,6 +38,13 @@ public class ArrayDeque<T> {
     public T removeFirst() {
         if (isEmpty()) {
             return null;
+        } else if (firstindex == item.length - 1) {
+            T temp = item[0];
+            item[0] = null;
+            firstindex = 0;
+            size -= 1;
+            calculateUsageFactor();
+            return temp;
         } else {
             T temp = item[firstindex + 1];
             item[firstindex + 1] = null;
@@ -51,7 +58,15 @@ public class ArrayDeque<T> {
     public T removeLast() {
         if (isEmpty()) {
             return null;
-        } else {
+        } else if (lastindex == 0) {
+            T temp = item[item.length - 1];
+            item[item.length - 1] = null;
+            firstindex = item.length - 1;
+            size -= 1;
+            calculateUsageFactor();
+            return temp;
+        }
+        else {
             T temp = item[lastindex - 1];
             item[lastindex - 1] = null;
             lastindex -= 1;
