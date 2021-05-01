@@ -8,20 +8,24 @@ public class ArrayDeque<T> {
 
     public ArrayDeque() {
         item = (T[]) new Object[8];
-        size = 8;
         initialindex = 4;
         size = 0;
     }
     private void resize(int capacity) {
-        T[] temp = (T[]) new Object[capacity];
-        int midpoint = size / 2;
-        int fromfirsttoend = size - firstindex - 1;
-        int fromendtofirst = size - fromfirsttoend;
-        System.arraycopy(item, firstindex + 1, temp, midpoint - 1, fromfirsttoend);
-        System.arraycopy(item, 0, temp, midpoint + fromfirsttoend - 1, fromendtofirst);
-        item = temp;
-        firstindex = midpoint - 2;
-        lastindex = midpoint + size - 1;
+        if (capacity <= 0){
+            T[] temp = (T[]) new Object[8];
+            item = temp;
+        } else {
+            T[] temp = (T[]) new Object[capacity];
+            int midpoint = size / 2;
+            int fromfirsttoend = size - firstindex - 1;
+            int fromendtofirst = size - fromfirsttoend;
+            System.arraycopy(item, firstindex + 1, temp, midpoint - 1, fromfirsttoend);
+            System.arraycopy(item, 0, temp, midpoint + fromfirsttoend - 1, fromendtofirst);
+            item = temp;
+            firstindex = midpoint - 2;
+            lastindex = midpoint + size - 1;
+        }
     }
 
     public T get(int index) {
@@ -35,7 +39,7 @@ public class ArrayDeque<T> {
         if (isEmpty()) {
             return null;
         } else {
-            T temp = item[firstindex];
+            T temp = item[firstindex + 1];
             item[firstindex + 1] = null;
             firstindex += 1;
             size -= 1;
@@ -48,7 +52,7 @@ public class ArrayDeque<T> {
         if (isEmpty()) {
             return null;
         } else {
-            T temp = item[lastindex];
+            T temp = item[lastindex - 1];
             item[lastindex - 1] = null;
             lastindex -= 1;
             size -= 1;
