@@ -69,24 +69,23 @@ public class LinkedListDequeTest {
 		ArrayDeque<Integer> ad1 = new ArrayDeque<>();
 		ad1.addFirst(0);
 		ad1.get(0);
-		ad1.get(0);
+		ad1.addFirst(2);
 		ad1.addLast(3);
-		ad1.removeLast();
+		ad1.addFirst(4);
 		ad1.removeLast();
 		ad1.addFirst(6);
 		ad1.addLast(7);
-		ad1.get(0);
-		ad1.removeFirst();
-		ad1.addFirst(10);
-		ad1.removeFirst();
-		ad1.addLast(12);
+		ad1.addFirst(8);
+		ad1.addFirst(9);
+		ad1.addLast(10);
+		ad1.addLast(11);
+		ad1.addFirst(12);
 		ad1.addLast(13);
-		ad1.addFirst(14);
-		ad1.addLast(15);
-		ad1.addFirst(16);
-		ad1.addLast(17);
-		ad1.addLast(18);
-		System.out.print(ad1.get(5));
+		ad1.addLast(14);
+		ad1.removeFirst();
+		ad1.removeFirst();
+		ad1.removeFirst();
+		System.out.print(ad1.removeLast());
 	}
 
 	/** Adds an item, then removes an item, and ensures that dll is empty afterwards. */

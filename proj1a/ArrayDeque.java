@@ -37,7 +37,7 @@ public class ArrayDeque<T> {
             return item[item.length - 1];
         } else if (firstindex == item.length - 1 & item[0] != null) {
             return item[0 + index];
-        } else if( firstindex + 1 + index >= item.length & item[0] != null) {
+        } else if (firstindex + 1 + index >= item.length & item[0] != null) {
             return item[item.length - firstindex - 1 - index];
         } else {
             return item[firstindex + index + 1];
@@ -95,7 +95,7 @@ public class ArrayDeque<T> {
     }
 
     private void calculateUsageFactor() {
-        double usagefactor = size / item.length;
+        double usagefactor = (double) size / (double) item.length;
         if (usagefactor < 0.25 & item.length >= 16) {
             resize(size * 2);
         }
