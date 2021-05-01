@@ -29,21 +29,29 @@ public class ArrayDeque<T> {
     }
 
     public T removeFirst() {
-        T temp = item[firstindex];
-        item[firstindex + 1] = null;
-        firstindex += 1;
-        size -= 1;
-        calculateUsageFactor();
-        return temp;
+        if (isEmpty()) {
+            return null;
+        } else {
+            T temp = item[firstindex];
+            item[firstindex + 1] = null;
+            firstindex += 1;
+            size -= 1;
+            calculateUsageFactor();
+            return temp;
+        }
     }
 
     public T removeLast() {
-        T temp = item[lastindex];
-        item[lastindex - 1] = null;
-        lastindex -= 1;
-        size -= 1;
-        calculateUsageFactor();
-        return temp;
+        if (isEmpty()) {
+            return null;
+        } else {
+            T temp = item[lastindex];
+            item[lastindex - 1] = null;
+            lastindex -= 1;
+            size -= 1;
+            calculateUsageFactor();
+            return temp;
+        }
     }
 
     private void firstindexChecker() {
