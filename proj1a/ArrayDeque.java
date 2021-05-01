@@ -35,8 +35,10 @@ public class ArrayDeque<T> {
             return item[item.length - 1];
         } else if (lastindex == 0 & index == 0 & item[0] != null) {
             return item[item.length - 1];
-        } else if (firstindex == item.length - 1 || firstindex + 1 + index >= item.length) {
+        } else if (firstindex == item.length - 1 & item[0] != null) {
             return item[0 + index];
+        } else if( firstindex + 1 + index >= item.length & item[0] != null) {
+            return item[item.length - firstindex - 1 - index];
         } else {
             return item[firstindex + index + 1];
         }
