@@ -2,71 +2,97 @@ public class ArrayDeque<T> {
 
     private T[] item;
     private int size;
-    private int initialsize;
-    private int firstsize;
-    private int lastsize;
+    private int initialindex;
+    private int firstindex;
+    private int lastindex;
 
     public ArrayDeque() {
         item = (T[]) new Object[8];
         size = 8;
-        initialsize = 4;
+        initialindex = 4;
         size = 0;
+    }
+    private void resize(int capacity) {
+        T[] temp = (T[]) new Object[capacity];
+        int midpoint = size / 2;
+        int fromfirsttoend = size - firstindex - 1;
+        int fromendtofirst = size - fromfirsttoend;
+        System.arraycopy(item, firstindex + 1, temp, midpoint - 1, fromfirsttoend);
+        System.arraycopy(item, 0, temp, midpoint + fromfirsttoend - 1, fromendtofirst);
+        item = temp;
+        firstindex = midpoint - 2;
+        lastindex = midpoint + size - 1;
     }
 
     public T get(int index) {
-        return item[firstsize + index + 1];
+        return item[firstindex + index + 1];
     }
 
     public T removeFirst() {
-        T temp = item[firstsize];
-        item[firstsize + 1] = null;
-        firstsize += 1;
+        T temp = item[firstindex];
+        item[firstindex + 1] = null;
+        firstindex += 1;
         size -= 1;
+        calculateUsageFactor();
         return temp;
     }
 
     public T removeLast() {
-        T temp = item[lastsize];
-        item[lastsize - 1] = null;
-        lastsize -= 1;
+        T temp = item[lastindex];
+        item[lastindex - 1] = null;
+        lastindex -= 1;
         size -= 1;
+        calculateUsageFactor();
         return temp;
     }
 
     private void firstindexChecker() {
-        if (firstsize <= -1 & item[item.length - 1] == null) {
-            firstsize = item.length - 1;
+        if (firstindex <= -1 & item[item.length - 1] == null) {
+            firstindex = item.length - 1;
         }
     }
 
     private void lastindexChecker() {
-        if (lastsize >= item.length & item[0] == null) {
-            lastsize = 0;
+        if (lastindex >= item.length & item[0] == null) {
+            lastindex = 0;
+        }
+    }
+
+    private void calculateUsageFactor() {
+        double usagefactor = size / item.length;
+        if (usagefactor < 0.25 & size >= 16) {
+            resize(size * 2);
         }
     }
 
     public void addFirst(T x) {
-        if (item[initialsize] == null) {
-            item[initialsize] = x;
-            firstsize = initialsize - 1;
-            lastsize = initialsize + 1;
+        if (item[initialindex] == null & size == 0) {
+            item[initialindex] = x;
+            firstindex = initialindex - 1;
+            lastindex = initialindex + 1;
             size += 1;
         } else {
-            item[firstsize] = x;
-            firstsize -= 1;
+            if (size == item.length) {
+                resize(size * 2);
+            }
+            item[firstindex] = x;
+            firstindex -= 1;
             size += 1;
             firstindexChecker();
         }
     }
     public void addLast(T x) {
-        if (item[initialsize] == null) {
-            item[initialsize] = x;
-            firstsize = initialsize - 1;
-            lastsize = initialsize + 1;
+        if (item[initialindex] == null & size == 0) {
+            item[initialindex] = x;
+            firstindex = initialindex - 1;
+            lastindex = initialindex + 1;
             size += 1;
         } else {
-            item[lastsize] = x;
-            lastsize += 1;
+            if (size == item.length) {
+                resize(size * 2);
+            }
+            item[lastindex] = x;
+            lastindex += 1;
             size += 1;
             lastindexChecker();
         }
@@ -84,7 +110,7 @@ public class ArrayDeque<T> {
     }
 
     public void printDeque() {
-        for (int i = firstsize + 1; i < lastsize; i++) {
+        for (int i = firstindex + 1; i < lastindex; i++) {
             System.out.print(item[i]);
             System.out.print(' ');
         }
