@@ -66,24 +66,25 @@ public class LinkedListDequeTest {
          */
         ArrayDeque<Integer> ad1 = new ArrayDeque<>();
         ad1.addLast(0);
-        ad1.removeLast();
-        ad1.addLast(2);
-        ad1.addLast(3);
-        ad1.addFirst(4);
-        ad1.addFirst(5);
-        ad1.addLast(6);
+        ad1.addFirst(1);
+        ad1.addFirst(2);
+        ad1.addFirst(3);
+        ad1.addLast(4);
+        ad1.removeFirst();
+        ad1.get(1);
         ad1.addFirst(7);
         ad1.addFirst(8);
         ad1.addLast(9);
-        ad1.addFirst(10);
-        ad1.get(1);
-        ad1.get(7);
+        ad1.addLast(10);
+        ad1.addFirst(11);
+        ad1.removeLast();
+        ad1.addLast(13);
+        ad1.removeLast();
         ad1.removeFirst();
-        ad1.removeFirst();
-        ad1.get(6);
-        ad1.removeFirst();
-        ad1.removeFirst();
-        ad1.removeFirst();
+        ad1.removeLast();
+        ad1.get(0);
+        ad1.removeLast();
+        ad1.removeLast();
         System.out.print(ad1.removeFirst());
     }
 

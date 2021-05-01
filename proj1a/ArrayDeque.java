@@ -20,7 +20,7 @@ public class ArrayDeque<T> {
             int midpoint = size / 2;
             int fromfirsttoend;
             int fromendtofirst;
-            if (firstindex > size) {
+            if (firstindex >= size) {
                 fromfirsttoend = lastindex - 1 - firstindex;
                 System.arraycopy(item, firstindex + 1, temp, midpoint - 1, fromfirsttoend);
             } else {
@@ -50,6 +50,7 @@ public class ArrayDeque<T> {
             item[0] = null;
             firstindex = 0;
             size -= 1;
+            calculateUsageFactor();
             return temp;
         } else {
             T temp = item[firstindex + 1];
@@ -69,6 +70,7 @@ public class ArrayDeque<T> {
             item[item.length - 1] = null;
             lastindex = item.length - 1;
             size -= 1;
+            calculateUsageFactor();
             return temp;
         } else {
             T temp = item[lastindex - 1];
@@ -96,6 +98,8 @@ public class ArrayDeque<T> {
         double usagefactor = (double) size / (double) item.length;
         if (usagefactor < 0.25 & item.length >= 16) {
             resize(size * 2);
+            firstindexChecker();
+            lastindexChecker();
         }
     }
 
