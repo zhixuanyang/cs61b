@@ -93,6 +93,7 @@ public class ArrayDeque<T> {
     }
 
     public void addFirst(T x) {
+        firstindexChecker();
         if (item[initialindex] == null & size == 0) {
             item[initialindex] = x;
             firstindex = initialindex - 1;
@@ -109,6 +110,7 @@ public class ArrayDeque<T> {
         }
     }
     public void addLast(T x) {
+        lastindexChecker();
         if (item[initialindex] == null & size == 0) {
             item[initialindex] = x;
             firstindex = initialindex - 1;
