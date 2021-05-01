@@ -65,8 +65,7 @@ public class ArrayDeque<T> {
             size -= 1;
             calculateUsageFactor();
             return temp;
-        }
-        else {
+        } else {
             T temp = item[lastindex - 1];
             item[lastindex - 1] = null;
             lastindex -= 1;
