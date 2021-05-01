@@ -18,10 +18,17 @@ public class ArrayDeque<T> {
         } else {
             T[] temp = (T[]) new Object[capacity];
             int midpoint = size / 2;
-            int fromfirsttoend = size - firstindex - 1;
-            int fromendtofirst = size - fromfirsttoend;
-            System.arraycopy(item, firstindex + 1, temp, midpoint - 1, fromfirsttoend);
-            System.arraycopy(item, 0, temp, midpoint + fromfirsttoend - 1, fromendtofirst);
+            int fromfirsttoend;
+            int fromendtofirst;
+            if (firstindex > size) {
+                fromfirsttoend = lastindex - 1 - firstindex;
+                System.arraycopy(item, firstindex + 1, temp, midpoint - 1, fromfirsttoend);
+            } else {
+                fromfirsttoend = size - firstindex - 1;
+                fromendtofirst = size - fromfirsttoend;
+                System.arraycopy(item, firstindex + 1, temp, midpoint - 1, fromfirsttoend);
+                System.arraycopy(item, 0, temp, midpoint + fromfirsttoend - 1, fromendtofirst);
+            }
             item = temp;
             firstindex = midpoint - 2;
             lastindex = midpoint + size - 1;
