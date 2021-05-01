@@ -31,17 +31,8 @@ public class ArrayDeque<T> {
     public T get(int index) {
         if (isEmpty()) {
             return null;
-        } else if (firstindex + 1 + index == item.length - 1) {
-            return item[item.length - 1];
-        } else if (lastindex == 0 & index == 0 & item[0] != null) {
-            return item[item.length - 1];
-        } else if (firstindex == item.length - 1 & item[0] != null) {
-            return item[0 + index];
-        } else if (firstindex + 1 + index >= item.length & item[0] != null) {
-            return item[(firstindex + index) % item.length];
-        } else {
-            return item[firstindex + index + 1];
         }
+        return item[(index + firstindex + 1) % item.length];
     }
 
     public T removeFirst() {
