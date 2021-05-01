@@ -12,7 +12,7 @@ public class ArrayDeque<T> {
         size = 0;
     }
     private void resize(int capacity) {
-        if (capacity <= 0){
+        if (capacity <= 0) {
             T[] temp = (T[]) new Object[8];
             item = temp;
         } else {
