@@ -25,6 +25,9 @@ public class ArrayDeque<T> {
     }
 
     public T get(int index) {
+        if (isEmpty()) {
+            return null;
+        }
         return item[firstindex + index + 1];
     }
 
@@ -68,7 +71,7 @@ public class ArrayDeque<T> {
 
     private void calculateUsageFactor() {
         double usagefactor = size / item.length;
-        if (usagefactor < 0.25 & size >= 16) {
+        if (usagefactor < 0.25 & item.length >= 16) {
             resize(size * 2);
         }
     }
