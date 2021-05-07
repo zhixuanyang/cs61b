@@ -3,10 +3,10 @@ import byog.TileEngine.TETile;
 import byog.TileEngine.Tileset;
 
 public class WorldGenerator {
-    private static Position[] isolation;
-    private static int index = 0;
+    private Position[] isolation;
+    private int index = 0;
 
-    private static class Position {
+    private class Position {
 
         private int x;
         private int y;
@@ -24,7 +24,7 @@ public class WorldGenerator {
         }
     }
 
-    public static TETile[][] initialworld() {
+    public TETile[][] initialworld() {
         TETile[][] temp = new TETile[Game.WIDTH][Game.HEIGHT];
         for (int x = 0; x < Game.WIDTH; x += 1) {
             for (int y = 0; y < Game.HEIGHT; y += 1) {
@@ -34,17 +34,17 @@ public class WorldGenerator {
         return temp;
     }
 
-    public static int getRandomNumberUsingNextInt(int min, int max) {
+    public int getRandomNumberUsingNextInt(int min, int max) {
         return Game.random.nextInt(max - min) + min;
     }
 
-    public static Position generatePosition() {
+    public Position generatePosition() {
         Position temp = new Position(getRandomNumberUsingNextInt(1, Game.WIDTH - 1),
                 getRandomNumberUsingNextInt(1, Game.HEIGHT - 1));
         return temp;
     }
 
-    public static Position generateRoom(TETile[][] w, Position p, TETile t) {
+    public Position generateRoom(TETile[][] w, Position p, TETile t) {
         int width = getRandomNumberUsingNextInt(1, 8);
         int height = getRandomNumberUsingNextInt(1, 8);
         Position temp;
@@ -67,21 +67,21 @@ public class WorldGenerator {
         return temp;
     }
 
-    public static Position addRoom(TETile[][] w, TETile t) {
+    public Position addRoom(TETile[][] w, TETile t) {
         Position p = generatePosition();
         return generateRoom(w, p, t);
     }
 
-    public static boolean isGrass(TETile t) {
+    public boolean isGrass(TETile t) {
         return t == Tileset.GRASS;
     }
 
-    public static boolean isNothing(TETile t) {
+    public boolean isNothing(TETile t) {
         return t == Tileset.NOTHING;
     }
 
 
-    public static boolean checkSurroding(TETile[][] tempworld, int x, int y) {
+    public boolean checkSurroding(TETile[][] tempworld, int x, int y) {
         if (x == 0 & y == 0) {
             for (int i = x; i < x + 2; i++) {
                 for (int j = y; j < y + 2; j++) {
@@ -160,7 +160,7 @@ public class WorldGenerator {
         return false;
     }
 
-    public static void addFloor(TETile[][] tempworld) {
+    public void addFloor(TETile[][] tempworld) {
         for (int i = 0; i < Game.WIDTH; i++) {
             for (int j = 0; j < Game.HEIGHT; j++) {
                 if (isNothing(tempworld[i][j]) & checkSurroding(tempworld, i, j)) {
@@ -170,7 +170,7 @@ public class WorldGenerator {
         }
     }
 
-    public static boolean detechRowsBack(TETile[][] tempworld, Position p) {
+    public boolean detechRowsBack(TETile[][] tempworld, Position p) {
         for (int i = p.x - 1 - p.roomwidth; i > 0; i--) {
             if (isGrass(tempworld[i][p.y])) {
                 for (int j = p.x; j > i; j--) {
@@ -182,7 +182,7 @@ public class WorldGenerator {
         return false;
     }
 
-    public static boolean detectRowsNextOne(TETile[][] tempworld, Position p) {
+    public boolean detectRowsNextOne(TETile[][] tempworld, Position p) {
         boolean temp = false;
         for (int i = p.x + 1; i < Game.WIDTH; i++) {
             if (isGrass(tempworld[i][p.y])) {
@@ -199,7 +199,7 @@ public class WorldGenerator {
         return temp;
     }
 
-    public static boolean detechColumnBack(TETile[][] tempworld, Position p) {
+    public boolean detechColumnBack(TETile[][] tempworld, Position p) {
         for (int i = p.y - 1 - p.roomheight; i > 0; i--) {
             if (isGrass(tempworld[p.x][i])) {
                 for (int j = p.y; j > i; j--) {
@@ -211,7 +211,7 @@ public class WorldGenerator {
         return false;
     }
 
-    public static boolean detectColumnsNextOne(TETile[][] tempworld, Position p) {
+    public boolean detectColumnsNextOne(TETile[][] tempworld, Position p) {
         boolean temp = false;
         for (int i = p.y + 1; i < Game.HEIGHT; i++) {
             if (isGrass(tempworld[p.x][i])) {
@@ -228,7 +228,7 @@ public class WorldGenerator {
         return temp;
     }
 
-    public static void generateMultipleRooms(TETile[][] tempworld, TETile t) {
+    public void generateMultipleRooms(TETile[][] tempworld, TETile t) {
         int number = getRandomNumberUsingNextInt(30, 40);
         isolation = new Position[number];
         Position temp;
@@ -245,7 +245,7 @@ public class WorldGenerator {
         }
     }
 
-    public static void doubleCheckHighway(TETile[][] tempworld, Position[] iso) {
+    public void doubleCheckHighway(TETile[][] tempworld, Position[] iso) {
         for (int i = 0; i < index; i++) {
             if (!detectColumnsNextOne(tempworld, iso[i])) {
                 detectRowsNextOne(tempworld, iso[i]);
@@ -253,7 +253,7 @@ public class WorldGenerator {
         }
     }
 
-    public static boolean detechRowsWallBack(TETile[][] tempworld, Position p) {
+    public boolean detechRowsWallBack(TETile[][] tempworld, Position p) {
         for (int i = p.x; i > 0; i--) {
             if (isWall(tempworld[i][p.y])) {
                 tempworld[i][p.y] = Tileset.LOCKED_DOOR;
@@ -263,7 +263,7 @@ public class WorldGenerator {
         return false;
     }
 
-    public static boolean detectRowsWall(TETile[][] tempworld, Position p) {
+    public boolean detectRowsWall(TETile[][] tempworld, Position p) {
         boolean temp = false;
         for (int i = p.x; i < Game.WIDTH; i++) {
             if (isWall(tempworld[i][p.y])) {
@@ -278,7 +278,7 @@ public class WorldGenerator {
         return temp;
     }
 
-    public static boolean detechColumnWallBack(TETile[][] tempworld, Position p) {
+    public boolean detechColumnWallBack(TETile[][] tempworld, Position p) {
         for (int i = p.y; i > 0; i--) {
             if (isWall(tempworld[p.x][i])) {
                 tempworld[p.x][i] = Tileset.LOCKED_DOOR;
@@ -288,7 +288,7 @@ public class WorldGenerator {
         return false;
     }
 
-    public static boolean detectColumnsWall(TETile[][] tempworld, Position p) {
+    public boolean detectColumnsWall(TETile[][] tempworld, Position p) {
         boolean temp = false;
         for (int i = p.y; i < Game.HEIGHT; i++) {
             if (isWall(tempworld[p.x][i])) {
@@ -304,11 +304,11 @@ public class WorldGenerator {
     }
 
 
-    public static boolean isWall(TETile t) {
+    public boolean isWall(TETile t) {
         return t == Tileset.WALL;
     }
 
-    public static void generateRandomDoor(TETile[][] temp) {
+    public void generateRandomDoor(TETile[][] temp) {
         boolean aka;
         Position p = new Position(getRandomNumberUsingNextInt(0, Game.WIDTH),
                 getRandomNumberUsingNextInt(0, Game.HEIGHT));
@@ -318,7 +318,7 @@ public class WorldGenerator {
         }
     }
 
-    public static TETile[][] playthegame(TETile[][] temp) {
+    public TETile[][] playthegame(TETile[][] temp) {
         generateMultipleRooms(temp, Tileset.GRASS);
         if (isolation[0] != null) {
             doubleCheckHighway(temp, isolation);
