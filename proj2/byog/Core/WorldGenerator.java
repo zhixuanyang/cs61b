@@ -336,9 +336,9 @@ public class WorldGenerator {
 
     public static TETile[][] playthegame(TETile[][] temp) {
         generateMultipleRooms(temp, Tileset.GRASS);
-        if (index != 0) {
-            doubleCheckHighway(temp, isolation);
-        }
+        //if (index != 0) {
+          //  doubleCheckHighway(temp, isolation);
+        //}
         addFloor(temp);
         generateRandomDoor(temp);
         return temp;
