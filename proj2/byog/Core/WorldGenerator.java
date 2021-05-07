@@ -5,8 +5,8 @@ import java.util.Random;
 
 public class WorldGenerator {
     static Random RANDOM;
-    private static int WIDTH;
-    private static int HEIGHT;
+    private static int WIDTH = 80;
+    private static int HEIGHT = 30;
     private static Position[] isolation;
     private static int index = 0;
     public static void generaterandom(long seed) {
@@ -253,10 +253,6 @@ public class WorldGenerator {
                 detectRowsNextOne(tempworld, iso[i]);
             }
         }
-    }
-    public static TETile[][] initializetheworld(int x, int y) {
-        TETile[][] temp = new TETile[x][y];
-        return temp;
     }
 
     public static void getWH(int x, int y) {
