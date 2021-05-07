@@ -1,5 +1,4 @@
 package byog.Core;
-import byog.TileEngine.TERenderer;
 import byog.TileEngine.TETile;
 import byog.TileEngine.Tileset;
 import java.util.Random;
@@ -10,8 +9,7 @@ public class WorldGenerator {
     private static int HEIGHT;
     private static Position[] isolation;
     private static int index = 0;
-    public static TETile[][] world;
-
+    static TETile[][] world;
     public static void generaterandom(long seed) {
         RANDOM = new Random(seed);
     }
@@ -19,24 +17,24 @@ public class WorldGenerator {
 
         private int x;
         private int y;
-        private int room_width;
-        private int room_height;
+        private int roomwidth;
+        private int roomheight;
 
         Position(int x, int y) {
             this.x = x;
             this.y = y;
         }
 
-        public void getWidthHeight(int x, int y) {
-            room_width = x;
-            room_height = y;
+        public void getWidthHeight(int a, int b) {
+            roomwidth = a;
+            roomheight = b;
         }
     }
 
-    public static void initialworld(TETile[][] world, int width, int height) {
+    public static void initialworld(TETile[][] w, int width, int height) {
         for (int x = 0; x < width; x += 1) {
             for (int y = 0; y < height; y += 1) {
-                world[x][y] = Tileset.NOTHING;
+                w[x][y] = Tileset.NOTHING;
             }
         }
     }
@@ -51,32 +49,32 @@ public class WorldGenerator {
         return temp;
     }
 
-    public static Position generateRoom(TETile[][] world, Position p, TETile t) {
+    public static Position generateRoom(TETile[][] w, Position p, TETile t) {
         int width = getRandomNumberUsingNextInt(1, 8);
         int height = getRandomNumberUsingNextInt(1, 8);
         Position temp;
-        int dif_x = p.x;
-        int dif_y = p.y;
+        int difx = p.x;
+        int dify = p.y;
         if (p.x + width > WIDTH - 1) {
-            dif_x = p.x - ((p.x + width) - WIDTH) - 1;
+            difx = p.x - ((p.x + width) - WIDTH) - 1;
         }
         if (p.y + height > HEIGHT - 1) {
-            dif_y = p.y - ((p.y + height) - HEIGHT) - 1;
+            dify = p.y - ((p.y + height) - HEIGHT) - 1;
         }
-        temp = new Position(dif_x, dif_y);
+        temp = new Position(difx, dify);
         for (int i = 0; i < width; i++) {
             for (int j = 0; j < height; j++) {
-                world[temp.x + i][temp.y + j] = t;
+                w[temp.x + i][temp.y + j] = t;
             }
         }
-        temp = new Position(dif_x + width - 1, dif_y + height - 1);
+        temp = new Position(difx + width - 1, dify + height - 1);
         temp.getWidthHeight(width, height);
         return temp;
     }
 
-    public static Position addRoom(TETile[][] world, TETile t) {
+    public static Position addRoom(TETile[][] w, TETile t) {
         Position p = generatePosition();
-        return generateRoom(world, p, t);
+        return generateRoom(w, p, t);
     }
 
     public static boolean isGrass(TETile t) {
@@ -88,100 +86,100 @@ public class WorldGenerator {
     }
 
 
-    public static boolean checkSurroding(TETile[][] world, int x, int y) {
-            if (x == 0 & y == 0) {
-                for (int i = x; i < x + 2; i++) {
-                    for (int j = y; j < y + 2; j++) {
-                        if (isGrass(world[i][j])) {
-                            return true;
-                        }
-                    }
-                }
-            } else if (x == 0 & y != 0 & y != HEIGHT - 1) {
-                for (int i = x; i < x + 2; i++) {
-                    for (int j = y - 1; j < y + 2; j++) {
-                        if (isGrass(world[i][j])) {
-                            return true;
-                        }
-                    }
-                }
-            } else if (y == 0 & x != 0 & x != WIDTH - 1) {
-                for (int i = x - 1; i < x + 2; i++) {
-                    for (int j = y; j < y + 2; j++) {
-                        if (isGrass(world[i][j])) {
-                            return true;
-                        }
-                    }
-                }
-            } else if (x == WIDTH - 1 & y == HEIGHT - 1) {
-                for (int i = x - 1; i < x + 1; i++) {
-                    for (int j = y - 1; j < y + 1; j++) {
-                        if (isGrass(world[i][j])) {
-                            return true;
-                        }
-                    }
-                }
-            } else if (x == WIDTH - 1 & y != HEIGHT - 1 & y != 0) {
-                for (int i = x - 1; i < x + 1; i++) {
-                    for (int j = y - 1; j < y + 2; j++) {
-                        if (isGrass(world[i][j])) {
-                            return true;
-                        }
-                    }
-                }
-            } else if (y == HEIGHT - 1 & x != WIDTH - 1 & x != 0) {
-                for (int i = x - 1; i < x + 2; i++) {
-                    for (int j = y - 1; j < HEIGHT; j++) {
-                        if (isGrass(world[i][j])) {
-                            return true;
-                        }
-                    }
-                }
-            } else if (x == 0 & y == HEIGHT - 1) {
-                for (int i = x; i < x + 2; i++) {
-                    for (int j = y - 1; j < HEIGHT; j++) {
-                        if (isGrass(world[i][j])) {
-                            return true;
-                        }
-                    }
-                }
-            } else if (x == WIDTH - 1 & y == 0) {
-                for (int i = x - 1; i < WIDTH; i++) {
-                    for (int j = y; j < y + 2; j++) {
-                        if (isGrass(world[i][j])) {
-                            return true;
-                        }
-                    }
-                }
-            }
-        if (x == 0 || x == WIDTH - 1 || y == 0 || y == HEIGHT - 1) {
-                return false;
-            }
-            for (int i = x - 1; i < x + 2; i++) {
-                for (int j = y - 1; j < y + 2; j++) {
-                    if (isGrass(world[i][j])) {
+    public static boolean checkSurroding(TETile[][] tempworld, int x, int y) {
+        if (x == 0 & y == 0) {
+            for (int i = x; i < x + 2; i++) {
+                for (int j = y; j < y + 2; j++) {
+                    if (isGrass(tempworld[i][j])) {
                         return true;
                     }
                 }
             }
+        } else if (x == 0 & y != 0 & y != HEIGHT - 1) {
+            for (int i = x; i < x + 2; i++) {
+                for (int j = y - 1; j < y + 2; j++) {
+                    if (isGrass(tempworld[i][j])) {
+                        return true;
+                    }
+                }
+            }
+        } else if (y == 0 & x != 0 & x != WIDTH - 1) {
+            for (int i = x - 1; i < x + 2; i++) {
+                for (int j = y; j < y + 2; j++) {
+                    if (isGrass(tempworld[i][j])) {
+                        return true;
+                    }
+                }
+            }
+        } else if (x == WIDTH - 1 & y == HEIGHT - 1) {
+            for (int i = x - 1; i < x + 1; i++) {
+                for (int j = y - 1; j < y + 1; j++) {
+                    if (isGrass(tempworld[i][j])) {
+                        return true;
+                    }
+                }
+            }
+        } else if (x == WIDTH - 1 & y != HEIGHT - 1 & y != 0) {
+            for (int i = x - 1; i < x + 1; i++) {
+                for (int j = y - 1; j < y + 2; j++) {
+                    if (isGrass(tempworld[i][j])) {
+                        return true;
+                    }
+                }
+            }
+        } else if (y == HEIGHT - 1 & x != WIDTH - 1 & x != 0) {
+            for (int i = x - 1; i < x + 2; i++) {
+                for (int j = y - 1; j < HEIGHT; j++) {
+                    if (isGrass(tempworld[i][j])) {
+                        return true;
+                    }
+                }
+            }
+        } else if (x == 0 & y == HEIGHT - 1) {
+            for (int i = x; i < x + 2; i++) {
+                for (int j = y - 1; j < HEIGHT; j++) {
+                    if (isGrass(tempworld[i][j])) {
+                        return true;
+                    }
+                }
+            }
+        } else if (x == WIDTH - 1 & y == 0) {
+            for (int i = x - 1; i < WIDTH; i++) {
+                for (int j = y; j < y + 2; j++) {
+                    if (isGrass(tempworld[i][j])) {
+                        return true;
+                    }
+                }
+            }
+        }
+        if (x == 0 || x == WIDTH - 1 || y == 0 || y == HEIGHT - 1) {
             return false;
+        }
+        for (int i = x - 1; i < x + 2; i++) {
+            for (int j = y - 1; j < y + 2; j++) {
+                if (isGrass(tempworld[i][j])) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
-    public static void addFloor(TETile[][] world) {
+    public static void addFloor(TETile[][] tempworld) {
         for (int i = 0; i < WIDTH; i++) {
             for (int j = 0; j < HEIGHT; j++) {
-                if (isNothing(world[i][j]) & checkSurroding(world, i, j)) {
-                    world[i][j] = Tileset.WALL;
+                if (isNothing(tempworld[i][j]) & checkSurroding(tempworld, i, j)) {
+                    tempworld[i][j] = Tileset.WALL;
                 }
             }
         }
     }
 
-    public static boolean detechRowsBack(TETile[][] world, Position p) {
-        for (int i = p.x - 1 - p.room_width; i > 0; i--) {
-            if (isGrass(world[i][p.y])) {
-                for (int j = p.x; j > i ; j--) {
-                    world[j][p.y] = Tileset.GRASS;
+    public static boolean detechRowsBack(TETile[][] tempworld, Position p) {
+        for (int i = p.x - 1 - p.roomwidth; i > 0; i--) {
+            if (isGrass(tempworld[i][p.y])) {
+                for (int j = p.x; j > i; j--) {
+                    tempworld[j][p.y] = Tileset.GRASS;
                 }
                 return true;
             }
@@ -189,26 +187,26 @@ public class WorldGenerator {
         return false;
     }
 
-    public static boolean detectRowsNextOne(TETile[][] world, Position p) {
+    public static boolean detectRowsNextOne(TETile[][] tempworld, Position p) {
         boolean temp = false;
         for (int i = p.x + 1; i < WIDTH; i++) {
-            if (isGrass(world[i][p.y])) {
+            if (isGrass(tempworld[i][p.y])) {
                 for (int j = p.x; j < i; j++) {
-                    world[j][p.y] = Tileset.GRASS;
+                    tempworld[j][p.y] = Tileset.GRASS;
                 }
                 return true;
             } else {
-                temp = detechRowsBack(world, p);
+                temp = detechRowsBack(tempworld, p);
             }
         }
         return temp;
     }
 
-    public static boolean detechColumnBack(TETile[][] world, Position p) {
-        for (int i = p.y - 1 - p.room_height; i > 0; i--) {
-            if (isGrass(world[p.x][i])) {
+    public static boolean detechColumnBack(TETile[][] tempworld, Position p) {
+        for (int i = p.y - 1 - p.roomheight; i > 0; i--) {
+            if (isGrass(tempworld[p.x][i])) {
                 for (int j = p.y; j > i; j--) {
-                    world[p.x][j] = Tileset.GRASS;
+                    tempworld[p.x][j] = Tileset.GRASS;
                 }
                 return true;
             }
@@ -216,31 +214,31 @@ public class WorldGenerator {
         return false;
     }
 
-    public static boolean detectColumnsNextOne(TETile[][] world, Position p) {
+    public static boolean detectColumnsNextOne(TETile[][] tempworld, Position p) {
         boolean temp = false;
         for (int i = p.y + 1; i < HEIGHT; i++) {
-            if (isGrass(world[p.x][i])) {
+            if (isGrass(tempworld[p.x][i])) {
                 for (int j = p.y; j < i; j++) {
-                    world[p.x][j] = Tileset.GRASS;
+                    tempworld[p.x][j] = Tileset.GRASS;
                 }
                 return true;
             } else {
-                temp = detechColumnBack(world, p);
+                temp = detechColumnBack(tempworld, p);
             }
         }
         return temp;
     }
 
-    public static void generateMultipleRooms(TETile[][] world, TETile t) {
+    public static void generateMultipleRooms(TETile[][] tempworld, TETile t) {
         int number = getRandomNumberUsingNextInt(30, 40);
         isolation = new Position[number];
         Position temp;
         boolean rows;
         boolean columns;
         for (int i = 0; i < number; i++) {
-            temp = addRoom(world, t);
-            rows = detectRowsNextOne(world, temp);
-            columns = detectColumnsNextOne(world, temp);
+            temp = addRoom(tempworld, t);
+            rows = detectRowsNextOne(tempworld, temp);
+            columns = detectColumnsNextOne(tempworld, temp);
             if (!rows & !columns) {
                 isolation[index] = temp;
                 index += 1;
@@ -248,16 +246,16 @@ public class WorldGenerator {
         }
     }
 
-    public static void doubleCheckHighway(TETile[][] world, Position[] iso) {
+    public static void doubleCheckHighway(TETile[][] tempworld, Position[] iso) {
         for (int i = 0; i < index; i++) {
-            if (!detectColumnsNextOne(world, iso[i])) {
-                detectRowsNextOne(world,iso[i]);
+            if (!detectColumnsNextOne(tempworld, iso[i])) {
+                detectRowsNextOne(tempworld, iso[i]);
             }
         }
     }
     public static TETile[][] initializetheworld(int x, int y) {
-        TETile[][] world = new TETile[x][y];
-        return world;
+        TETile[][] temp = new TETile[x][y];
+        return temp;
     }
 
     public static void getWH(int x, int y) {
