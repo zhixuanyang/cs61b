@@ -5,11 +5,16 @@ import byog.TileEngine.Tileset;
 import java.util.Random;
 
 public class WorldGenerator {
-    private static final long SEED = 123;
-    private static final Random RANDOM = new Random(SEED);
-    private static final int WIDTH = 70;
-    private static final int HEIGHT = 35;
+    private static Random RANDOM;
+    private static int WIDTH;
+    private static int HEIGHT;
+    private static Position[] isolation;
+    private static int index = 0;
+    public static TETile[][] world;
 
+    public static void generaterandom(long seed) {
+        RANDOM = new Random(seed);
+    }
     private static class Position {
 
         private int x;
@@ -172,71 +177,122 @@ public class WorldGenerator {
         }
     }
 
-    public static void detechRowsBack(TETile[][] world, Position p) {
+    public static boolean detechRowsBack(TETile[][] world, Position p) {
         for (int i = p.x - 1 - p.room_width; i > 0; i--) {
             if (isGrass(world[i][p.y])) {
                 for (int j = p.x; j > i ; j--) {
                     world[j][p.y] = Tileset.GRASS;
                 }
-                break;
+                return true;
             }
         }
+        return false;
     }
 
-    public static void detectRowsNextOne(TETile[][] world, Position p) {
+    public static boolean detectRowsNextOne(TETile[][] world, Position p) {
+        boolean temp = false;
         for (int i = p.x + 1; i < WIDTH; i++) {
             if (isGrass(world[i][p.y])) {
                 for (int j = p.x; j < i; j++) {
                     world[j][p.y] = Tileset.GRASS;
                 }
-                break;
+                return true;
             } else {
-                detechRowsBack(world, p);
+                temp = detechRowsBack(world, p);
             }
         }
+        return temp;
     }
 
-    public static void detechColumnBack(TETile[][] world, Position p) {
+    public static boolean detechColumnBack(TETile[][] world, Position p) {
         for (int i = p.y - 1 - p.room_height; i > 0; i--) {
             if (isGrass(world[p.x][i])) {
                 for (int j = p.y; j > i; j--) {
                     world[p.x][j] = Tileset.GRASS;
                 }
-                break;
+                return true;
             }
         }
+        return false;
     }
 
-    public static void detectColumnsNextOne(TETile[][] world, Position p) {
+    public static boolean detectColumnsNextOne(TETile[][] world, Position p) {
+        boolean temp = false;
         for (int i = p.y + 1; i < HEIGHT; i++) {
             if (isGrass(world[p.x][i])) {
                 for (int j = p.y; j < i; j++) {
                     world[p.x][j] = Tileset.GRASS;
                 }
-                break;
+                return true;
             } else {
-                detechColumnBack(world, p);
+                temp = detechColumnBack(world, p);
             }
         }
+        return temp;
     }
 
     public static void generateMultipleRooms(TETile[][] world, TETile t) {
         int number = getRandomNumberUsingNextInt(30, 40);
+        isolation = new Position[number];
         Position temp;
-        for (int i = 0; i < 15; i++) {
+        boolean rows;
+        boolean columns;
+        for (int i = 0; i < number; i++) {
             temp = addRoom(world, t);
-            detectRowsNextOne(world, temp);
-            detectColumnsNextOne(world, temp);
+            rows = detectRowsNextOne(world, temp);
+            columns = detectColumnsNextOne(world, temp);
+            if (!rows & !columns) {
+                isolation[index] = temp;
+                index += 1;
+            }
         }
     }
 
-    public static void main(String[] args) {
-        TERenderer ter = new TERenderer();
-        ter.initialize(WIDTH, HEIGHT);
-        TETile[][] world = new TETile[WIDTH][HEIGHT];
-        initialworld(world, WIDTH, HEIGHT);
-        generateMultipleRooms(world, Tileset.GRASS);
-        //addFloor(world);
+    public static void doubleCheckHighway(TETile[][] world, Position[] iso) {
+        for (int i = 0; i < index; i++) {
+            if (!detectColumnsNextOne(world, iso[i])) {
+                detectRowsNextOne(world,iso[i]);
+            }
+        }
+    }
+    public static TETile[][] initializetheworld(TERenderer ter, int x, int y) {
+        ter.initialize(x, y);
+        TETile[][] world = new TETile[x][y];
+        return world;
+    }
+
+    public static void getWH(int x, int y) {
+        WIDTH = x;
+        HEIGHT = y;
+    }
+
+    public static void getworld(TETile[][] temp) {
+        world = temp;
+    }
+
+    public static TETile[][] playthegame(TERenderer ter, int x, int y, String input) {
+        char[] chars = input.toCharArray();
+        getWH(x, y);
+        String temp = "";
+        long rand;
+        int loc = 1;
+        if (chars[0] == 'N' || chars[0] == 'n') {
+            getworld(initializetheworld(ter, x, y));
+        }
+        while (!Character.isAlphabetic(chars[loc])) {
+            temp += String.valueOf(chars[loc]);
+            loc += 1;
+        }
+        rand = Long.parseLong(temp);
+        generaterandom(rand);
+        System.out.print(rand);
+        if (chars[loc] == 'S' || chars[loc] == 's') {
+            initialworld(world, WIDTH, HEIGHT);
+            generateMultipleRooms(world, Tileset.GRASS);
+            doubleCheckHighway(world, isolation);
+            addFloor(world);
+        }
         ter.renderFrame(world);
+        return world;
     }
 }
