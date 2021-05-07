@@ -4,12 +4,11 @@ import byog.TileEngine.Tileset;
 import java.util.Random;
 
 public class WorldGenerator {
-    private static Random RANDOM;
+    static Random RANDOM;
     private static int WIDTH;
     private static int HEIGHT;
     private static Position[] isolation;
     private static int index = 0;
-    static TETile[][] world;
     public static void generaterandom(long seed) {
         RANDOM = new Random(seed);
     }
@@ -31,12 +30,14 @@ public class WorldGenerator {
         }
     }
 
-    public static void initialworld(TETile[][] w, int width, int height) {
-        for (int x = 0; x < width; x += 1) {
-            for (int y = 0; y < height; y += 1) {
-                w[x][y] = Tileset.NOTHING;
+    public static TETile[][] initialworld() {
+        TETile[][] temp = new TETile[WIDTH][HEIGHT];
+        for (int x = 0; x < WIDTH; x += 1) {
+            for (int y = 0; y < HEIGHT; y += 1) {
+                temp[x][y] = Tileset.NOTHING;
             }
         }
+        return temp;
     }
 
     public static int getRandomNumberUsingNextInt(int min, int max) {
@@ -263,32 +264,10 @@ public class WorldGenerator {
         HEIGHT = y;
     }
 
-    public static void getworld(TETile[][] temp) {
-        world = temp;
-    }
-
-    public static TETile[][] playthegame(int x, int y, String input) {
-        char[] chars = input.toCharArray();
-        getWH(x, y);
-        String temp = "";
-        long rand;
-        int loc = 1;
-        if (chars[0] == 'N' || chars[0] == 'n') {
-            getworld(initializetheworld(x, y));
-        }
-        while (!Character.isAlphabetic(chars[loc])) {
-            temp += String.valueOf(chars[loc]);
-            loc += 1;
-        }
-        rand = Long.parseLong(temp);
-        generaterandom(rand);
-        System.out.print(rand);
-        if (chars[loc] == 'S' || chars[loc] == 's') {
-            initialworld(world, WIDTH, HEIGHT);
-            generateMultipleRooms(world, Tileset.GRASS);
-            doubleCheckHighway(world, isolation);
-            addFloor(world);
-        }
-        return world;
+    public static TETile[][] playthegame(TETile[][] temp) {
+        generateMultipleRooms(temp, Tileset.GRASS);
+        doubleCheckHighway(temp, isolation);
+        addFloor(temp);
+        return temp;
     }
 }
