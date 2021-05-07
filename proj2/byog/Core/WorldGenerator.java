@@ -199,6 +199,9 @@ public class WorldGenerator {
                 return true;
             } else {
                 temp = detechRowsBack(tempworld, p);
+                if (temp) {
+                    return temp;
+                }
             }
         }
         return temp;
@@ -226,6 +229,9 @@ public class WorldGenerator {
                 return true;
             } else {
                 temp = detechColumnBack(tempworld, p);
+                if (temp) {
+                    return temp;
+                }
             }
         }
         return temp;
@@ -262,7 +268,7 @@ public class WorldGenerator {
     }
 
     public static boolean detechRowsWallBack(TETile[][] tempworld, Position p) {
-        for (int i = p.x - 1 - p.roomwidth; i > 0; i--) {
+        for (int i = p.x; i > 0; i--) {
             if (isWall(tempworld[i][p.y])) {
                 tempworld[i][p.y] = Tileset.LOCKED_DOOR;
                 return true;
@@ -273,19 +279,22 @@ public class WorldGenerator {
 
     public static boolean detectRowsWall(TETile[][] tempworld, Position p) {
         boolean temp = false;
-        for (int i = p.x + 1; i < WIDTH; i++) {
+        for (int i = p.x; i < WIDTH; i++) {
             if (isWall(tempworld[i][p.y])) {
                 tempworld[i][p.y] = Tileset.LOCKED_DOOR;
                 return true;
             } else {
                 temp = detechRowsWallBack(tempworld, p);
+                if (temp) {
+                    return temp;
+                }
             }
         }
         return temp;
     }
 
     public static boolean detechColumnWallBack(TETile[][] tempworld, Position p) {
-        for (int i = p.y - 1 - p.roomheight; i > 0; i--) {
+        for (int i = p.y; i > 0; i--) {
             if (isWall(tempworld[p.x][i])) {
                 tempworld[p.x][i] = Tileset.LOCKED_DOOR;
                 return true;
@@ -296,12 +305,15 @@ public class WorldGenerator {
 
     public static boolean detectColumnsWall(TETile[][] tempworld, Position p) {
         boolean temp = false;
-        for (int i = p.y + 1; i < HEIGHT; i++) {
+        for (int i = p.y; i < HEIGHT; i++) {
             if (isWall(tempworld[p.x][i])) {
                 tempworld[p.x][i] = Tileset.LOCKED_DOOR;
                 return true;
             } else {
                 temp = detechColumnWallBack(tempworld, p);
+                if (temp) {
+                    return temp;
+                }
             }
         }
         return temp;
