@@ -255,8 +255,7 @@ public class WorldGenerator {
             }
         }
     }
-    public static TETile[][] initializetheworld(TERenderer ter, int x, int y) {
-        ter.initialize(x, y);
+    public static TETile[][] initializetheworld(int x, int y) {
         TETile[][] world = new TETile[x][y];
         return world;
     }
@@ -270,14 +269,14 @@ public class WorldGenerator {
         world = temp;
     }
 
-    public static TETile[][] playthegame(TERenderer ter, int x, int y, String input) {
+    public static TETile[][] playthegame(int x, int y, String input) {
         char[] chars = input.toCharArray();
         getWH(x, y);
         String temp = "";
         long rand;
         int loc = 1;
         if (chars[0] == 'N' || chars[0] == 'n') {
-            getworld(initializetheworld(ter, x, y));
+            getworld(initializetheworld(x, y));
         }
         while (!Character.isAlphabetic(chars[loc])) {
             temp += String.valueOf(chars[loc]);
@@ -292,7 +291,6 @@ public class WorldGenerator {
             doubleCheckHighway(world, isolation);
             addFloor(world);
         }
-        ter.renderFrame(world);
         return world;
     }
 }
