@@ -261,12 +261,74 @@ public class WorldGenerator {
         HEIGHT = y;
     }
 
+    public static boolean detechRowsWallBack(TETile[][] tempworld, Position p) {
+        for (int i = p.x - 1 - p.roomwidth; i > 0; i--) {
+            if (isWall(tempworld[i][p.y])) {
+                tempworld[i][p.y] = Tileset.LOCKED_DOOR;
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public static boolean detectRowsWall(TETile[][] tempworld, Position p) {
+        boolean temp = false;
+        for (int i = p.x + 1; i < WIDTH; i++) {
+            if (isWall(tempworld[i][p.y])) {
+                tempworld[i][p.y] = Tileset.LOCKED_DOOR;
+                return true;
+            } else {
+                temp = detechRowsWallBack(tempworld, p);
+            }
+        }
+        return temp;
+    }
+
+    public static boolean detechColumnWallBack(TETile[][] tempworld, Position p) {
+        for (int i = p.y - 1 - p.roomheight; i > 0; i--) {
+            if (isWall(tempworld[p.x][i])) {
+                tempworld[p.x][i] = Tileset.LOCKED_DOOR;
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public static boolean detectColumnsWall(TETile[][] tempworld, Position p) {
+        boolean temp = false;
+        for (int i = p.y + 1; i < HEIGHT; i++) {
+            if (isWall(tempworld[p.x][i])) {
+                tempworld[p.x][i] = Tileset.LOCKED_DOOR;
+                return true;
+            } else {
+                temp = detechColumnWallBack(tempworld, p);
+            }
+        }
+        return temp;
+    }
+
+
+    public static boolean isWall(TETile t) {
+        return t == Tileset.WALL;
+    }
+
+    public static void generateRandomDoor(TETile[][] temp) {
+        boolean aka;
+        Position p = new Position(getRandomNumberUsingNextInt(0, WIDTH),
+                getRandomNumberUsingNextInt(0, HEIGHT));
+        aka = detectRowsWall(temp, p);
+        if (!aka) {
+            detectColumnsWall(temp, p);
+        }
+    }
+
     public static TETile[][] playthegame(TETile[][] temp) {
         generateMultipleRooms(temp, Tileset.GRASS);
         if (isolation.length != 0) {
             doubleCheckHighway(temp, isolation);
         }
         addFloor(temp);
+        generateRandomDoor(temp);
         return temp;
     }
 }
