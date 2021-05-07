@@ -1,17 +1,10 @@
 package byog.Core;
 import byog.TileEngine.TETile;
 import byog.TileEngine.Tileset;
-import java.util.Random;
 
 public class WorldGenerator {
-    static Random RANDOM;
-    private static int WIDTH;
-    private static int HEIGHT;
     private static Position[] isolation;
     private static int index = 0;
-    public static void generaterandom(long seed) {
-        RANDOM = new Random(seed);
-    }
 
     private static class Position {
 
@@ -32,9 +25,9 @@ public class WorldGenerator {
     }
 
     public static TETile[][] initialworld() {
-        TETile[][] temp = new TETile[WIDTH][HEIGHT];
-        for (int x = 0; x < WIDTH; x += 1) {
-            for (int y = 0; y < HEIGHT; y += 1) {
+        TETile[][] temp = new TETile[Game.WIDTH][Game.HEIGHT];
+        for (int x = 0; x < Game.WIDTH; x += 1) {
+            for (int y = 0; y < Game.HEIGHT; y += 1) {
                 temp[x][y] = Tileset.NOTHING;
             }
         }
@@ -42,12 +35,12 @@ public class WorldGenerator {
     }
 
     public static int getRandomNumberUsingNextInt(int min, int max) {
-        return RANDOM.nextInt(max - min) + min;
+        return Game.random.nextInt(max - min) + min;
     }
 
     public static Position generatePosition() {
-        Position temp = new Position(getRandomNumberUsingNextInt(1, WIDTH - 1),
-                getRandomNumberUsingNextInt(1, HEIGHT - 1));
+        Position temp = new Position(getRandomNumberUsingNextInt(1, Game.WIDTH - 1),
+                getRandomNumberUsingNextInt(1, Game.HEIGHT - 1));
         return temp;
     }
 
@@ -57,11 +50,11 @@ public class WorldGenerator {
         Position temp;
         int difx = p.x;
         int dify = p.y;
-        if (p.x + width > WIDTH - 1) {
-            difx = p.x - ((p.x + width) - WIDTH) - 1;
+        if (p.x + width > Game.WIDTH - 1) {
+            difx = p.x - ((p.x + width) - Game.WIDTH) - 1;
         }
-        if (p.y + height > HEIGHT - 1) {
-            dify = p.y - ((p.y + height) - HEIGHT) - 1;
+        if (p.y + height > Game.HEIGHT - 1) {
+            dify = p.y - ((p.y + height) - Game.HEIGHT) - 1;
         }
         temp = new Position(difx, dify);
         for (int i = 0; i < width; i++) {
@@ -97,7 +90,7 @@ public class WorldGenerator {
                     }
                 }
             }
-        } else if (x == 0 & y != 0 & y != HEIGHT - 1) {
+        } else if (x == 0 & y != 0 & y != Game.HEIGHT - 1) {
             for (int i = x; i < x + 2; i++) {
                 for (int j = y - 1; j < y + 2; j++) {
                     if (isGrass(tempworld[i][j])) {
@@ -105,7 +98,7 @@ public class WorldGenerator {
                     }
                 }
             }
-        } else if (y == 0 & x != 0 & x != WIDTH - 1) {
+        } else if (y == 0 & x != 0 & x != Game.WIDTH - 1) {
             for (int i = x - 1; i < x + 2; i++) {
                 for (int j = y; j < y + 2; j++) {
                     if (isGrass(tempworld[i][j])) {
@@ -113,7 +106,7 @@ public class WorldGenerator {
                     }
                 }
             }
-        } else if (x == WIDTH - 1 & y == HEIGHT - 1) {
+        } else if (x == Game.WIDTH - 1 & y == Game.HEIGHT - 1) {
             for (int i = x - 1; i < x + 1; i++) {
                 for (int j = y - 1; j < y + 1; j++) {
                     if (isGrass(tempworld[i][j])) {
@@ -121,7 +114,7 @@ public class WorldGenerator {
                     }
                 }
             }
-        } else if (x == WIDTH - 1 & y != HEIGHT - 1 & y != 0) {
+        } else if (x == Game.WIDTH - 1 & y != Game.HEIGHT - 1 & y != 0) {
             for (int i = x - 1; i < x + 1; i++) {
                 for (int j = y - 1; j < y + 2; j++) {
                     if (isGrass(tempworld[i][j])) {
@@ -129,24 +122,24 @@ public class WorldGenerator {
                     }
                 }
             }
-        } else if (y == HEIGHT - 1 & x != WIDTH - 1 & x != 0) {
+        } else if (y == Game.HEIGHT - 1 & x != Game.WIDTH - 1 & x != 0) {
             for (int i = x - 1; i < x + 2; i++) {
-                for (int j = y - 1; j < HEIGHT; j++) {
+                for (int j = y - 1; j < Game.HEIGHT; j++) {
                     if (isGrass(tempworld[i][j])) {
                         return true;
                     }
                 }
             }
-        } else if (x == 0 & y == HEIGHT - 1) {
+        } else if (x == 0 & y == Game.HEIGHT - 1) {
             for (int i = x; i < x + 2; i++) {
-                for (int j = y - 1; j < HEIGHT; j++) {
+                for (int j = y - 1; j < Game.HEIGHT; j++) {
                     if (isGrass(tempworld[i][j])) {
                         return true;
                     }
                 }
             }
-        } else if (x == WIDTH - 1 & y == 0) {
-            for (int i = x - 1; i < WIDTH; i++) {
+        } else if (x == Game.WIDTH - 1 & y == 0) {
+            for (int i = x - 1; i < Game.WIDTH; i++) {
                 for (int j = y; j < y + 2; j++) {
                     if (isGrass(tempworld[i][j])) {
                         return true;
@@ -154,7 +147,7 @@ public class WorldGenerator {
                 }
             }
         }
-        if (x == 0 || x == WIDTH - 1 || y == 0 || y == HEIGHT - 1) {
+        if (x == 0 || x == Game.WIDTH - 1 || y == 0 || y == Game.HEIGHT - 1) {
             return false;
         }
         for (int i = x - 1; i < x + 2; i++) {
@@ -168,8 +161,8 @@ public class WorldGenerator {
     }
 
     public static void addFloor(TETile[][] tempworld) {
-        for (int i = 0; i < WIDTH; i++) {
-            for (int j = 0; j < HEIGHT; j++) {
+        for (int i = 0; i < Game.WIDTH; i++) {
+            for (int j = 0; j < Game.HEIGHT; j++) {
                 if (isNothing(tempworld[i][j]) & checkSurroding(tempworld, i, j)) {
                     tempworld[i][j] = Tileset.WALL;
                 }
@@ -191,7 +184,7 @@ public class WorldGenerator {
 
     public static boolean detectRowsNextOne(TETile[][] tempworld, Position p) {
         boolean temp = false;
-        for (int i = p.x + 1; i < WIDTH; i++) {
+        for (int i = p.x + 1; i < Game.WIDTH; i++) {
             if (isGrass(tempworld[i][p.y])) {
                 for (int j = p.x; j < i; j++) {
                     tempworld[j][p.y] = Tileset.GRASS;
@@ -220,7 +213,7 @@ public class WorldGenerator {
 
     public static boolean detectColumnsNextOne(TETile[][] tempworld, Position p) {
         boolean temp = false;
-        for (int i = p.y + 1; i < HEIGHT; i++) {
+        for (int i = p.y + 1; i < Game.HEIGHT; i++) {
             if (isGrass(tempworld[p.x][i])) {
                 for (int j = p.y; j < i; j++) {
                     tempworld[p.x][j] = Tileset.GRASS;
@@ -237,7 +230,7 @@ public class WorldGenerator {
 
     public static void generateMultipleRooms(TETile[][] tempworld, TETile t) {
         int number = getRandomNumberUsingNextInt(30, 40);
-        isolation = new Position[100];
+        isolation = new Position[number];
         Position temp;
         boolean rows;
         boolean columns;
@@ -260,11 +253,6 @@ public class WorldGenerator {
         }
     }
 
-    public static void getWH(int x, int y) {
-        WIDTH = x;
-        HEIGHT = y;
-    }
-
     public static boolean detechRowsWallBack(TETile[][] tempworld, Position p) {
         for (int i = p.x; i > 0; i--) {
             if (isWall(tempworld[i][p.y])) {
@@ -277,7 +265,7 @@ public class WorldGenerator {
 
     public static boolean detectRowsWall(TETile[][] tempworld, Position p) {
         boolean temp = false;
-        for (int i = p.x; i < WIDTH; i++) {
+        for (int i = p.x; i < Game.WIDTH; i++) {
             if (isWall(tempworld[i][p.y])) {
                 tempworld[i][p.y] = Tileset.LOCKED_DOOR;
                 return true;
@@ -302,7 +290,7 @@ public class WorldGenerator {
 
     public static boolean detectColumnsWall(TETile[][] tempworld, Position p) {
         boolean temp = false;
-        for (int i = p.y; i < HEIGHT; i++) {
+        for (int i = p.y; i < Game.HEIGHT; i++) {
             if (isWall(tempworld[p.x][i])) {
                 tempworld[p.x][i] = Tileset.LOCKED_DOOR;
                 return true;
@@ -322,8 +310,8 @@ public class WorldGenerator {
 
     public static void generateRandomDoor(TETile[][] temp) {
         boolean aka;
-        Position p = new Position(getRandomNumberUsingNextInt(0, WIDTH),
-                getRandomNumberUsingNextInt(0, HEIGHT));
+        Position p = new Position(getRandomNumberUsingNextInt(0, Game.WIDTH),
+                getRandomNumberUsingNextInt(0, Game.HEIGHT));
         aka = detectRowsWall(temp, p);
         if (!aka) {
             detectColumnsWall(temp, p);

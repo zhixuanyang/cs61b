@@ -2,6 +2,7 @@ package byog.Core;
 
 import byog.TileEngine.TERenderer;
 import byog.TileEngine.TETile;
+import java.util.Random;
 
 public class Game {
     TERenderer ter = new TERenderer();
@@ -12,6 +13,7 @@ public class Game {
     private boolean newGameMode = false; // flag to check whether a new game is gonna be generated
     private boolean quitMode = false;
     private String seedString = ""; // store input random seed numbers as String
+    static Random random;
     /**
      * Method used for playing a fresh game. The game should start from the main menu.
      */
@@ -88,8 +90,7 @@ public class Game {
     }
 
     private void setupNewGame() {
-        WorldGenerator.generaterandom(Long.parseLong(seedString));
-        WorldGenerator.getWH(WIDTH, HEIGHT);
+        random = new Random(Long.parseLong(seedString));
     }
 
     public TETile[][] playWithInputString(String input) {
