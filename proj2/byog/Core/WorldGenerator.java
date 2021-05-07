@@ -5,7 +5,7 @@ import byog.TileEngine.Tileset;
 import java.util.Random;
 
 public class WorldGenerator {
-    private static final long SEED = 491;
+    private static final long SEED = 123;
     private static final Random RANDOM = new Random(SEED);
     private static final int WIDTH = 70;
     private static final int HEIGHT = 35;
@@ -110,7 +110,7 @@ public class WorldGenerator {
                 }
             } else if (x == WIDTH - 1 & y == HEIGHT - 1) {
                 for (int i = x - 1; i < x + 1; i++) {
-                    for (int j = y; j < y + 1; j++) {
+                    for (int j = y - 1; j < y + 1; j++) {
                         if (isGrass(world[i][j])) {
                             return true;
                         }
@@ -118,7 +118,7 @@ public class WorldGenerator {
                 }
             } else if (x == WIDTH - 1 & y != HEIGHT - 1 & y != 0) {
                 for (int i = x - 1; i < x + 1; i++) {
-                    for (int j = y; j < y + 2; j++) {
+                    for (int j = y - 1; j < y + 2; j++) {
                         if (isGrass(world[i][j])) {
                             return true;
                         }
@@ -126,14 +126,30 @@ public class WorldGenerator {
                 }
             } else if (y == HEIGHT - 1 & x != WIDTH - 1 & x != 0) {
                 for (int i = x - 1; i < x + 2; i++) {
-                    for (int j = y; j < y + 1; j++) {
+                    for (int j = y - 1; j < HEIGHT; j++) {
+                        if (isGrass(world[i][j])) {
+                            return true;
+                        }
+                    }
+                }
+            } else if (x == 0 & y == HEIGHT - 1) {
+                for (int i = x; i < x + 2; i++) {
+                    for (int j = y - 1; j < HEIGHT; j++) {
+                        if (isGrass(world[i][j])) {
+                            return true;
+                        }
+                    }
+                }
+            } else if (x == WIDTH - 1 & y == 0) {
+                for (int i = x - 1; i < WIDTH; i++) {
+                    for (int j = y; j < y + 2; j++) {
                         if (isGrass(world[i][j])) {
                             return true;
                         }
                     }
                 }
             }
-            if (x == 0 || x == WIDTH - 1 || y == 0 || y == HEIGHT - 1) {
+        if (x == 0 || x == WIDTH - 1 || y == 0 || y == HEIGHT - 1) {
                 return false;
             }
             for (int i = x - 1; i < x + 2; i++) {
@@ -207,7 +223,7 @@ public class WorldGenerator {
     public static void generateMultipleRooms(TETile[][] world, TETile t) {
         int number = getRandomNumberUsingNextInt(30, 40);
         Position temp;
-        for (int i = 0; i < number; i++) {
+        for (int i = 0; i < 15; i++) {
             temp = addRoom(world, t);
             detectRowsNextOne(world, temp);
             detectColumnsNextOne(world, temp);
@@ -220,7 +236,7 @@ public class WorldGenerator {
         TETile[][] world = new TETile[WIDTH][HEIGHT];
         initialworld(world, WIDTH, HEIGHT);
         generateMultipleRooms(world, Tileset.GRASS);
-        addFloor(world);
+        //addFloor(world);
         ter.renderFrame(world);
     }
 }
