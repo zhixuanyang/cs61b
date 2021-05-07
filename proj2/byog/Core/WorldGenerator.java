@@ -197,12 +197,11 @@ public class WorldGenerator {
                     tempworld[j][p.y] = Tileset.GRASS;
                 }
                 return true;
-            } else {
-                temp = detechRowsBack(tempworld, p);
-                if (temp) {
-                    return temp;
-                }
             }
+        }
+        temp = detechRowsBack(tempworld, p);
+        if (temp) {
+            return temp;
         }
         return temp;
     }
@@ -227,19 +226,18 @@ public class WorldGenerator {
                     tempworld[p.x][j] = Tileset.GRASS;
                 }
                 return true;
-            } else {
-                temp = detechColumnBack(tempworld, p);
-                if (temp) {
-                    return temp;
-                }
             }
+        }
+        temp = detechColumnBack(tempworld, p);
+        if (temp) {
+            return temp;
         }
         return temp;
     }
 
     public static void generateMultipleRooms(TETile[][] tempworld, TETile t) {
         int number = getRandomNumberUsingNextInt(30, 40);
-        isolation = new Position[number];
+        isolation = new Position[100];
         Position temp;
         boolean rows;
         boolean columns;
@@ -283,12 +281,11 @@ public class WorldGenerator {
             if (isWall(tempworld[i][p.y])) {
                 tempworld[i][p.y] = Tileset.LOCKED_DOOR;
                 return true;
-            } else {
-                temp = detechRowsWallBack(tempworld, p);
-                if (temp) {
-                    return temp;
-                }
             }
+        }
+        temp = detechRowsWallBack(tempworld, p);
+        if (temp) {
+            return temp;
         }
         return temp;
     }
@@ -309,12 +306,11 @@ public class WorldGenerator {
             if (isWall(tempworld[p.x][i])) {
                 tempworld[p.x][i] = Tileset.LOCKED_DOOR;
                 return true;
-            } else {
-                temp = detechColumnWallBack(tempworld, p);
-                if (temp) {
-                    return temp;
-                }
             }
+        }
+        temp = detechColumnWallBack(tempworld, p);
+        if (temp) {
+            return temp;
         }
         return temp;
     }
@@ -336,9 +332,9 @@ public class WorldGenerator {
 
     public static TETile[][] playthegame(TETile[][] temp) {
         generateMultipleRooms(temp, Tileset.GRASS);
-        //if (index != 0) {
-          //  doubleCheckHighway(temp, isolation);
-        //}
+        if (isolation[0] != null) {
+            doubleCheckHighway(temp, isolation);
+        }
         addFloor(temp);
         generateRandomDoor(temp);
         return temp;
