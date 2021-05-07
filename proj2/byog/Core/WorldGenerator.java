@@ -5,13 +5,14 @@ import java.util.Random;
 
 public class WorldGenerator {
     static Random RANDOM;
-    private static int WIDTH = 80;
-    private static int HEIGHT = 30;
+    private static int WIDTH;
+    private static int HEIGHT;
     private static Position[] isolation;
     private static int index = 0;
     public static void generaterandom(long seed) {
         RANDOM = new Random(seed);
     }
+
     private static class Position {
 
         private int x;
@@ -262,7 +263,9 @@ public class WorldGenerator {
 
     public static TETile[][] playthegame(TETile[][] temp) {
         generateMultipleRooms(temp, Tileset.GRASS);
-        doubleCheckHighway(temp, isolation);
+        if (isolation.length != 0) {
+            doubleCheckHighway(temp, isolation);
+        }
         addFloor(temp);
         return temp;
     }
