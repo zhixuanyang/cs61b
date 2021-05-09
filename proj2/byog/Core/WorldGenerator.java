@@ -303,7 +303,6 @@ public class WorldGenerator {
         return temp;
     }
 
-
     public boolean isWall(TETile t) {
         return t == Tileset.WALL;
     }
@@ -318,6 +317,65 @@ public class WorldGenerator {
         }
     }
 
+    public boolean detectColumnsPlayer(TETile[][] tempworld, Position p) {
+        boolean temp = false;
+        for (int i = p.y + 1; i < Game.HEIGHT; i++) {
+            if (isGrass(tempworld[p.x][i])) {
+                tempworld[p.x][i] = Tileset.PLAYER;
+                return true;
+            }
+        }
+        temp = detechColumnPlayerBack(tempworld, p);
+        if (temp) {
+            return temp;
+        }
+        return temp;
+    }
+
+    public boolean detechColumnPlayerBack(TETile[][] tempworld, Position p) {
+        for (int i = p.y; i > 0; i--) {
+            if (isGrass(tempworld[p.x][i])) {
+                tempworld[p.x][i] = Tileset.PLAYER;
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public boolean detechRowsPlayerBack(TETile[][] tempworld, Position p) {
+        for (int i = p.x; i > 0; i--) {
+            if (isGrass(tempworld[i][p.y])) {
+                tempworld[i][p.y] = Tileset.PLAYER;
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public boolean detectRowsPlayer(TETile[][] tempworld, Position p) {
+        boolean temp = false;
+        for (int i = p.x; i < Game.WIDTH; i++) {
+            if (isGrass(tempworld[i][p.y])) {
+                tempworld[i][p.y] = Tileset.PLAYER;
+                return true;
+            }
+        }
+        temp = detechRowsPlayerBack(tempworld, p);
+        if (temp) {
+            return temp;
+        }
+        return temp;
+    }
+
+    public void generatePlayerEntity(TETile[][] temp) {
+        Position p = new Position(getRandomNumberUsingNextInt(0, Game.WIDTH),
+                getRandomNumberUsingNextInt(0, Game.HEIGHT));
+        if (!detectColumnsPlayer(temp, p)) {
+            detectRowsPlayer(temp, p);
+        }
+    }
+
+
     public TETile[][] playthegame(TETile[][] temp) {
         generateMultipleRooms(temp, Tileset.GRASS);
         if (isolation[0] != null) {
@@ -325,6 +383,7 @@ public class WorldGenerator {
         }
         addFloor(temp);
         generateRandomDoor(temp);
+        generatePlayerEntity(temp);
         return temp;
     }
 }

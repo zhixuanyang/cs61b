@@ -2,6 +2,9 @@ package byog.Core;
 
 import byog.TileEngine.TERenderer;
 import byog.TileEngine.TETile;
+import edu.princeton.cs.introcs.StdDraw;
+
+import java.awt.*;
 import java.util.Random;
 
 public class Game {
@@ -9,11 +12,31 @@ public class Game {
     /* Feel free to change the width and height. */
     public static final int WIDTH = 80;
     public static final int HEIGHT = 30;
+    private int midWidth = WIDTH / 2;
+    private int midHeight = HEIGHT / 2;
     static Random random;
+
+    public Game () {
+        StdDraw.setCanvasSize(WIDTH * 16, HEIGHT * 16);
+        StdDraw.setXscale(0, WIDTH);
+        StdDraw.setYscale(0, HEIGHT);
+        StdDraw.clear(Color.black);
+        Font BigFont = new Font("Arial", Font.BOLD, 40);
+        StdDraw.setFont(BigFont);
+        StdDraw.setPenColor(Color.white);
+        StdDraw.text(midWidth, midHeight + 10, "CS61B: THE GAME");
+        Font SmallFont = new Font("Arial", Font.PLAIN, 20);
+        StdDraw.setFont(SmallFont);
+        StdDraw.setPenColor(Color.white);
+        StdDraw.text(midWidth, midHeight, "New Game (N)");
+        StdDraw.text(midWidth, midHeight - 1, "Load Game (L)");
+        StdDraw.text(midWidth, midHeight - 2, "Quit (Q)");
+    }
     /**
      * Method used for playing a fresh game. The game should start from the main menu.
      */
     public void playWithKeyboard() {
+        StdDraw.show();
     }
 
     /**
@@ -33,6 +56,7 @@ public class Game {
         char[] chars = input.toCharArray();
         // and return a 2D tile representation of the world that would have been
         // drawn if the same inputs had been given to playWithKeyboard().
+        ter.initialize(WIDTH, HEIGHT);
         WorldGenerator wg = new WorldGenerator();
         TETile[][] world = new TETile[0][];
         TETile[][] finalWorldFrame = new TETile[0][];
@@ -51,6 +75,7 @@ public class Game {
         if (chars[loc] == 'S' || chars[loc] == 's') {
             finalWorldFrame = wg.playthegame(world);
         }
+        ter.renderFrame(finalWorldFrame);
         return finalWorldFrame;
     }
 }
