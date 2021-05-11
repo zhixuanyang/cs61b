@@ -392,14 +392,4 @@ public class WorldGenerator {
         generatePlayerEntity(temp);
         return temp;
     }
-
-    public TETile[][] movement(TETile[][] temp) {
-        generateMultipleRooms(temp, Tileset.GRASS);
-        if (isolation[0] != null) {
-            doubleCheckHighway(temp, isolation);
-        }
-        addFloor(temp);
-        generateRandomDoor(temp);
-        return temp;
-    }
 }

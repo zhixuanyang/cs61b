@@ -136,12 +136,25 @@ public class Game {
                         inputfile += input;
                         ter.renderFrame(tempworld);
                     }
+            } else if (input.equals(":")) {
+                boolean temp = assessmentQ();
+                if (temp) {
+                    exit(0);
+                }
             }
         }
     }
 
+    public boolean assessmentQ() {
+        String input = solicitNCharsInput(1);
+        if (input.equals("Q") || input.equals("q")) {
+            return true;
+        }
+        return false;
+    }
+
     public void startGame() {
-        ter.initialize(WIDTH, HEIGHT);
+        ter.initialize(WIDTH, HEIGHT + 2);
         wg = new WorldGenerator();
         world = wg.initialworld();
         finalWorldFrame = wg.playthegame(world);
