@@ -1,5 +1,5 @@
 package byog.Core;
-
+import byog.TileEngine.Tileset;
 import byog.TileEngine.TERenderer;
 import byog.TileEngine.TETile;
 import edu.princeton.cs.introcs.StdDraw;
@@ -19,6 +19,7 @@ public class Game {
     WorldGenerator wg;
     long rand;
     public String inputfile = "";
+    public boolean gameOver;
     private int midHeight = HEIGHT / 2;
     static Random random;
     private boolean gameStart;
@@ -73,8 +74,8 @@ public class Game {
             if (key == 'S' || key == 's') {
                 inputfile += String.valueOf(key);
                 return input;
-            } else if (Character.isLetter(key)) {
-                throw new IllegalArgumentException("Seed Should Be Numbers!");
+            } else if (!Character.isDigit(key)) {
+                throw new IllegalArgumentException("Seed Should Be Number!");
             }
             input += String.valueOf(key);
             inputfile += String.valueOf(key);
@@ -100,9 +101,47 @@ public class Game {
         StdDraw.text(midWidth, midHeight - 6, "Enter Seed : ");
     }
 
-    public void startGame(String seed) {
-        rand = Long.parseLong(seed);
-        random = new Random(rand);
+    public void movePlayer() {
+        gameOver = false;
+        while (!gameOver) {
+            String input = solicitNCharsInput(1);
+            if (input.equals('W') || input.equals('w')) {
+                if (!wg.isWall(finalWorldFrame[wg.playerPosition.x][wg.playerPosition.y + 1])) {
+                    finalWorldFrame[wg.playerPosition.x][wg.playerPosition.y + 1] = Tileset.PLAYER;
+                    finalWorldFrame[wg.playerPosition.x][wg.playerPosition.y] = Tileset.GRASS;
+                    wg.playerPosition.y = wg.playerPosition.y + 1;
+                    inputfile += input;
+                    ter.renderFrame(finalWorldFrame);
+                }
+            } else if (input.equals('S') || input.equals('s')) {
+                if (!wg.isWall(finalWorldFrame[wg.playerPosition.x][wg.playerPosition.y - 1])) {
+                    finalWorldFrame[wg.playerPosition.x][wg.playerPosition.y - 1] = Tileset.PLAYER;
+                    finalWorldFrame[wg.playerPosition.x][wg.playerPosition.y] = Tileset.GRASS;
+                    wg.playerPosition.y = wg.playerPosition.y - 1;
+                    inputfile += input;
+                    ter.renderFrame(finalWorldFrame);
+                }
+            } else if (input.equals('A') || input.equals('a')) {
+                    if (!wg.isWall(finalWorldFrame[wg.playerPosition.x - 1][wg.playerPosition.y])) {
+                        finalWorldFrame[wg.playerPosition.x - 1][wg.playerPosition.y] = Tileset.PLAYER;
+                        finalWorldFrame[wg.playerPosition.x][wg.playerPosition.y] = Tileset.GRASS;
+                        wg.playerPosition.x = wg.playerPosition.x - 1;
+                        inputfile += input;
+                        ter.renderFrame(finalWorldFrame);
+                    }
+            } else if (input.equals('D') || input.equals('d')) {
+                    if (!wg.isWall(finalWorldFrame[wg.playerPosition.x + 1][wg.playerPosition.y])) {
+                        finalWorldFrame[wg.playerPosition.x + 1][wg.playerPosition.y] = Tileset.PLAYER;
+                        finalWorldFrame[wg.playerPosition.x][wg.playerPosition.y] = Tileset.GRASS;
+                        wg.playerPosition.x = wg.playerPosition.x + 1;
+                        inputfile += input;
+                        ter.renderFrame(finalWorldFrame);
+                    }
+            }
+        }
+    }
+
+    public void startGame() {
         ter.initialize(WIDTH, HEIGHT);
         wg = new WorldGenerator();
         world = wg.initialworld();
@@ -122,7 +161,10 @@ public class Game {
             if (input.equals("N") || input.equals("n")) {
                 inputfile += input;
                 String seed = solicitNCharsSeed();
-                startGame(seed);
+                rand = Long.parseLong(seed);
+                random = new Random(rand);
+                startGame();
+                movePlayer();
             } else if (input.equals("q") || input.equals("Q")) {
                 exitGame();
             }

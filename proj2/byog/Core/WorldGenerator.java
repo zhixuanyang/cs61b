@@ -1,16 +1,17 @@
 package byog.Core;
 import byog.TileEngine.TETile;
 import byog.TileEngine.Tileset;
+import byog.Core.Game;
 
 public class WorldGenerator {
     private Position[] isolation;
     private int index = 0;
-    private Position playerPosition;
+    public Position playerPosition;
 
-    private class Position {
+    public class Position {
 
-        private int x;
-        private int y;
+        public int x;
+        public int y;
         private int roomwidth;
         private int roomheight;
 
@@ -391,5 +392,4 @@ public class WorldGenerator {
         generatePlayerEntity(temp);
         return temp;
     }
-
 }
