@@ -101,41 +101,40 @@ public class Game {
         StdDraw.text(midWidth, midHeight - 6, "Enter Seed : ");
     }
 
-    public void movePlayer() {
-        gameOver = false;
+    public void movePlayer(TETile[][] tempworld, WorldGenerator tempwg) {
         while (!gameOver) {
             String input = solicitNCharsInput(1);
-            if (input.equals('W') || input.equals('w')) {
-                if (!wg.isWall(finalWorldFrame[wg.playerPosition.x][wg.playerPosition.y + 1])) {
-                    finalWorldFrame[wg.playerPosition.x][wg.playerPosition.y + 1] = Tileset.PLAYER;
-                    finalWorldFrame[wg.playerPosition.x][wg.playerPosition.y] = Tileset.GRASS;
-                    wg.playerPosition.y = wg.playerPosition.y + 1;
+            if (input.equals("W") || input.equals("w")) {
+                if (!tempwg.isWall(tempworld[tempwg.playerPosition.x][tempwg.playerPosition.y + 1])) {
+                    tempworld[tempwg.playerPosition.x][tempwg.playerPosition.y] = Tileset.GRASS;
+                    tempworld[tempwg.playerPosition.x][tempwg.playerPosition.y + 1] = Tileset.PLAYER;
+                    tempwg.playerPosition.y = tempwg.playerPosition.y + 1;
                     inputfile += input;
-                    ter.renderFrame(finalWorldFrame);
+                    ter.renderFrame(tempworld);
                 }
-            } else if (input.equals('S') || input.equals('s')) {
-                if (!wg.isWall(finalWorldFrame[wg.playerPosition.x][wg.playerPosition.y - 1])) {
-                    finalWorldFrame[wg.playerPosition.x][wg.playerPosition.y - 1] = Tileset.PLAYER;
-                    finalWorldFrame[wg.playerPosition.x][wg.playerPosition.y] = Tileset.GRASS;
-                    wg.playerPosition.y = wg.playerPosition.y - 1;
+            } else if (input.equals("S") || input.equals("s")) {
+                if (!tempwg.isWall(tempworld[tempwg.playerPosition.x][tempwg.playerPosition.y - 1])) {
+                    tempworld[tempwg.playerPosition.x][tempwg.playerPosition.y] = Tileset.GRASS;
+                    tempworld[tempwg.playerPosition.x][tempwg.playerPosition.y - 1] = Tileset.PLAYER;
+                    tempwg.playerPosition.y = tempwg.playerPosition.y - 1;
                     inputfile += input;
-                    ter.renderFrame(finalWorldFrame);
+                    ter.renderFrame(tempworld);
                 }
-            } else if (input.equals('A') || input.equals('a')) {
-                    if (!wg.isWall(finalWorldFrame[wg.playerPosition.x - 1][wg.playerPosition.y])) {
-                        finalWorldFrame[wg.playerPosition.x - 1][wg.playerPosition.y] = Tileset.PLAYER;
-                        finalWorldFrame[wg.playerPosition.x][wg.playerPosition.y] = Tileset.GRASS;
-                        wg.playerPosition.x = wg.playerPosition.x - 1;
+            } else if (input.equals("A") || input.equals("a")) {
+                    if (!tempwg.isWall(tempworld[tempwg.playerPosition.x - 1][tempwg.playerPosition.y])) {
+                        tempworld[tempwg.playerPosition.x][tempwg.playerPosition.y] = Tileset.GRASS;
+                        tempworld[tempwg.playerPosition.x - 1][tempwg.playerPosition.y] = Tileset.PLAYER;
+                        tempwg.playerPosition.x = tempwg.playerPosition.x - 1;
                         inputfile += input;
-                        ter.renderFrame(finalWorldFrame);
+                        ter.renderFrame(tempworld);
                     }
-            } else if (input.equals('D') || input.equals('d')) {
-                    if (!wg.isWall(finalWorldFrame[wg.playerPosition.x + 1][wg.playerPosition.y])) {
-                        finalWorldFrame[wg.playerPosition.x + 1][wg.playerPosition.y] = Tileset.PLAYER;
-                        finalWorldFrame[wg.playerPosition.x][wg.playerPosition.y] = Tileset.GRASS;
-                        wg.playerPosition.x = wg.playerPosition.x + 1;
+            } else if (input.equals("D") || input.equals("d")) {
+                    if (!tempwg.isWall(tempworld[tempwg.playerPosition.x + 1][tempwg.playerPosition.y])) {
+                        tempworld[tempwg.playerPosition.x][tempwg.playerPosition.y] = Tileset.GRASS;
+                        tempworld[tempwg.playerPosition.x + 1][tempwg.playerPosition.y] = Tileset.PLAYER;
+                        tempwg.playerPosition.x = tempwg.playerPosition.x + 1;
                         inputfile += input;
-                        ter.renderFrame(finalWorldFrame);
+                        ter.renderFrame(tempworld);
                     }
             }
         }
@@ -145,7 +144,6 @@ public class Game {
         ter.initialize(WIDTH, HEIGHT);
         wg = new WorldGenerator();
         world = wg.initialworld();
-        gameStart = true;
         finalWorldFrame = wg.playthegame(world);
         ter.renderFrame(finalWorldFrame);
     }
@@ -156,7 +154,7 @@ public class Game {
 
     public void playWithKeyboard() {
         drawGUI();
-        while (!gameStart) {
+        while (!gameOver) {
             String input = solicitNCharsInput(1);
             if (input.equals("N") || input.equals("n")) {
                 inputfile += input;
@@ -164,7 +162,7 @@ public class Game {
                 rand = Long.parseLong(seed);
                 random = new Random(rand);
                 startGame();
-                movePlayer();
+                movePlayer(finalWorldFrame, wg);
             } else if (input.equals("q") || input.equals("Q")) {
                 exitGame();
             }
