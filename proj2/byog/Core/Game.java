@@ -6,6 +6,7 @@ import edu.princeton.cs.introcs.StdDraw;
 import java.awt.Color;
 import java.awt.Font;
 import java.util.Random;
+import static java.lang.System.exit;
 
 public class Game {
     TERenderer ter = new TERenderer();
@@ -17,6 +18,7 @@ public class Game {
     TETile[][] finalWorldFrame;
     WorldGenerator wg;
     long rand;
+    public String inputfile = "";
     private int midHeight = HEIGHT / 2;
     static Random random;
     private boolean gameStart;
@@ -32,7 +34,7 @@ public class Game {
      * Method used for playing a fresh game. The game should start from the main menu.
      */
 
-    public void DrawGUI() {
+    public void drawGUI() {
         Font bigFont = new Font("Arial", Font.BOLD, 40);
         StdDraw.setFont(bigFont);
         StdDraw.setPenColor(Color.white);
@@ -54,6 +56,7 @@ public class Game {
             }
             char key = StdDraw.nextKeyTyped();
             input += String.valueOf(key);
+            inputfile += String.valueOf(key);
         }
         return input;
     }
@@ -68,11 +71,13 @@ public class Game {
             }
             key = StdDraw.nextKeyTyped();
             if (key == 'S' || key == 's') {
+                inputfile += String.valueOf(key);
                 return input;
             } else if (Character.isLetter(key)) {
                 throw new IllegalArgumentException("Seed Should Be Numbers!");
             }
             input += String.valueOf(key);
+            inputfile += String.valueOf(key);
             drawSeed(input);
         }
         return input;
@@ -80,7 +85,7 @@ public class Game {
 
     public void drawSeed(String s) {
         StdDraw.clear(Color.black);
-        DrawGUI();
+        drawGUI();
         enterSeed();
         Font smallFont = new Font("Arial", Font.PLAIN, 16);
         StdDraw.setFont(smallFont);
@@ -95,24 +100,31 @@ public class Game {
         StdDraw.text(midWidth, midHeight - 6, "Enter Seed : ");
     }
 
-    public void StartGame(String seed) {
+    public void startGame(String seed) {
         rand = Long.parseLong(seed);
         random = new Random(rand);
         ter.initialize(WIDTH, HEIGHT);
         wg = new WorldGenerator();
-        WorldGenerator wg = new WorldGenerator();
         world = wg.initialworld();
         gameStart = true;
         finalWorldFrame = wg.playthegame(world);
         ter.renderFrame(finalWorldFrame);
     }
+
+    public void exitGame() {
+        exit(0);
+    }
+
     public void playWithKeyboard() {
-        DrawGUI();
+        drawGUI();
         while (!gameStart) {
             String input = solicitNCharsInput(1);
             if (input.equals("N") || input.equals("n")) {
+                inputfile += input;
                 String seed = solicitNCharsSeed();
-                StartGame(seed);
+                startGame(seed);
+            } else if (input.equals("q") || input.equals("Q")) {
+                exitGame();
             }
         }
     }

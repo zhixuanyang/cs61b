@@ -5,6 +5,7 @@ import byog.TileEngine.Tileset;
 public class WorldGenerator {
     private Position[] isolation;
     private int index = 0;
+    private Position playerPosition;
 
     private class Position {
 
@@ -322,6 +323,7 @@ public class WorldGenerator {
         for (int i = p.y + 1; i < Game.HEIGHT; i++) {
             if (isGrass(tempworld[p.x][i])) {
                 tempworld[p.x][i] = Tileset.PLAYER;
+                playerPosition = new Position(p.x, i);
                 return true;
             }
         }
@@ -336,6 +338,7 @@ public class WorldGenerator {
         for (int i = p.y; i > 0; i--) {
             if (isGrass(tempworld[p.x][i])) {
                 tempworld[p.x][i] = Tileset.PLAYER;
+                playerPosition = new Position(p.x, i);
                 return true;
             }
         }
@@ -346,6 +349,7 @@ public class WorldGenerator {
         for (int i = p.x; i > 0; i--) {
             if (isGrass(tempworld[i][p.y])) {
                 tempworld[i][p.y] = Tileset.PLAYER;
+                playerPosition = new Position(i, p.y);
                 return true;
             }
         }
@@ -357,6 +361,7 @@ public class WorldGenerator {
         for (int i = p.x; i < Game.WIDTH; i++) {
             if (isGrass(tempworld[i][p.y])) {
                 tempworld[i][p.y] = Tileset.PLAYER;
+                playerPosition = new Position(i, p.y);
                 return true;
             }
         }
@@ -386,4 +391,5 @@ public class WorldGenerator {
         generatePlayerEntity(temp);
         return temp;
     }
+
 }
