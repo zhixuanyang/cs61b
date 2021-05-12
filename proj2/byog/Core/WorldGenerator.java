@@ -380,6 +380,9 @@ public class WorldGenerator {
         }
     }
 
+    public boolean isLockeddoor(TETile t) {
+        return t == Tileset.LOCKED_DOOR;
+    }
 
     public TETile[][] playthegame(TETile[][] temp) {
         generateMultipleRooms(temp, Tileset.GRASS);
