@@ -31,6 +31,7 @@ public class Game {
     private int midHeight = HEIGHT / 2;
     static Random random;
     private boolean gameStart;
+    String inpiutstringfile = "";
 
     public Game() {
         gameStart = false;
@@ -265,26 +266,26 @@ public class Game {
             } else if (input.equals("q") || input.equals("Q")) {
                 exitGame();
             } else if (input.equals("L") || input.equals("l")) {
-                Game game = new Game();
+                ter.initialize(WIDTH, HEIGHT + 4);
                 gameOver = false;
                 gameStart = true;
-                finalWorldFrame = game.playWithInputString(open());
+                finalWorldFrame = playWithInputString(open());
                 wg = new WorldGenerator();
                 wg.getPlayerposition(finalWorldFrame);
                 inputfile += open();
                 while (!gameOver) {
                     ter.renderFrame(finalWorldFrame);
-                    displayInfo(displayWorldclass(StdDraw.mouseX(), StdDraw.mouseY(), finalWorldFrame));
+                    displayInfo(displayWorldclass(StdDraw.mouseX(),
+                            StdDraw.mouseY(), finalWorldFrame));
                     if (StdDraw.hasNextKeyTyped()) {
                         movePlayer(finalWorldFrame, wg, solicitNCharsInput(1));
                     }
                 }
-                ter.initialize(WIDTH, HEIGHT + 4);
                 StdDraw.clear(Color.BLACK);
                 Font bigFont = new Font("Arial", Font.BOLD, 40);
                 StdDraw.setFont(bigFont);
                 StdDraw.setPenColor(Color.white);
-                StdDraw.text(Game.WIDTH / 2, Game.HEIGHT / 2 + 3, "You Won!");
+                StdDraw.text(WIDTH / 2, HEIGHT / 2 + 3, "You Won!");
                 StdDraw.show();
             }
         }
@@ -303,11 +304,69 @@ public class Game {
      * @return the 2D TETile[][] representing the state of the world
      */
 
+
+    public void movePlayerString(TETile[][] tempworld, WorldGenerator tempwg, String input) {
+        if (input.equals("W") || input.equals("w")) {
+            if (!tempwg.isWall(tempworld[tempwg.playerPosition.x][tempwg.playerPosition.y + 1])) {
+                tempworld[tempwg.playerPosition.x][tempwg.playerPosition.y] = Tileset.GRASS;
+                if (tempwg.isLockeddoor(tempworld[tempwg.playerPosition.x]
+                        [tempwg.playerPosition.y + 1])) {
+                    gameOver = true;
+                }
+                tempworld[tempwg.playerPosition.x]
+                        [tempwg.playerPosition.y + 1] = Tileset.PLAYER;
+                tempwg.playerPosition.y = tempwg.playerPosition.y + 1;
+                inputfile += input;
+            }
+        } else if (input.equals("S") || input.equals("s")) {
+            if (!tempwg.isWall(tempworld[tempwg.playerPosition.x][tempwg.playerPosition.y - 1])) {
+                tempworld[tempwg.playerPosition.x][tempwg.playerPosition.y] = Tileset.GRASS;
+                if (tempwg.isLockeddoor(tempworld[tempwg.playerPosition.x]
+                        [tempwg.playerPosition.y - 1])) {
+                    gameOver = true;
+                }
+                tempworld[tempwg.playerPosition.x][tempwg.playerPosition.y - 1] = Tileset.PLAYER;
+                tempwg.playerPosition.y = tempwg.playerPosition.y - 1;
+                inputfile += input;
+            }
+        } else if (input.equals("A") || input.equals("a")) {
+            if (!tempwg.isWall(tempworld[tempwg.playerPosition.x - 1][tempwg.playerPosition.y])) {
+                tempworld[tempwg.playerPosition.x][tempwg.playerPosition.y] = Tileset.GRASS;
+                if (tempwg.isLockeddoor(tempworld[tempwg.playerPosition.x - 1]
+                        [tempwg.playerPosition.y])) {
+                    gameOver = true;
+                }
+                tempworld[tempwg.playerPosition.x - 1][tempwg.playerPosition.y] = Tileset.PLAYER;
+                tempwg.playerPosition.x = tempwg.playerPosition.x - 1;
+                inputfile += input;
+            }
+        } else if (input.equals("D") || input.equals("d")) {
+            if (!tempwg.isWall(tempworld[tempwg.playerPosition.x + 1][tempwg.playerPosition.y])) {
+                tempworld[tempwg.playerPosition.x][tempwg.playerPosition.y] = Tileset.GRASS;
+                if (tempwg.isLockeddoor(tempworld[tempwg.playerPosition.x + 1]
+                        [tempwg.playerPosition.y])) {
+                    gameOver = true;
+                }
+                tempworld[tempwg.playerPosition.x + 1][tempwg.playerPosition.y] = Tileset.PLAYER;
+                tempwg.playerPosition.x = tempwg.playerPosition.x + 1;
+                inputfile += input;
+            }
+        } else if (input.equals(":")) {
+            boolean temp = assessmentQ();
+            if (temp) {
+                save(inputfile);
+                exit(0);
+            }
+        }
+    }
+
     public TETile[][] playWithInputString(String input) {
-        char[] chars = input.toCharArray();
         // and return a 2D tile representation of the world that would have been
         // drawn if the same inputs had been given to playWithKeyboard().
-        ter.initialize(WIDTH, HEIGHT + 4);
+        if (input.length() == 0) {
+            exit(0);
+        }
+        char[] chars = input.toCharArray();
         wg = new WorldGenerator();
         world = new TETile[0][];
         finalWorldFrame = new TETile[0][];
@@ -326,9 +385,8 @@ public class Game {
         if (chars[loc] == 'S' || chars[loc] == 's') {
             finalWorldFrame = wg.playthegame(world);
         }
-        ter.renderFrame(finalWorldFrame);
         for (int i = loc; i < input.length(); i++) {
-            movePlayer(finalWorldFrame, wg, String.valueOf(chars[i]));
+            movePlayerString(finalWorldFrame, wg, String.valueOf(chars[i]));
         }
         return finalWorldFrame;
     }
