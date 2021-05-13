@@ -5,7 +5,12 @@ import byog.TileEngine.TETile;
 import edu.princeton.cs.introcs.StdDraw;
 import java.awt.Color;
 import java.awt.Font;
+import java.io.File;
+import java.io.ObjectOutputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.Random;
+
 import static java.lang.System.exit;
 
 public class Game {
@@ -64,7 +69,6 @@ public class Game {
             }
             char key = StdDraw.nextKeyTyped();
             input += String.valueOf(key);
-            inputfile += String.valueOf(key);
         }
         return input;
     }
@@ -115,6 +119,22 @@ public class Game {
         StdDraw.text(3, 32, info);
         StdDraw.show();
     }
+
+    public void save(String input) {
+        File f = new File("./save_game.txt");
+        try {
+            if (!f.exists()) {
+                f.createNewFile();
+            }
+            FileOutputStream fs = new FileOutputStream(f);
+            ObjectOutputStream os = new ObjectOutputStream(fs);
+            os.writeObject(input);
+        } catch (IOException e) {
+            System.out.println(e);
+            exit(0);
+        }
+    }
+
     public void movePlayer(TETile[][] tempworld, WorldGenerator tempwg, String input) {
         if (input.equals("W") || input.equals("w")) {
             if (!tempwg.isWall(tempworld[tempwg.playerPosition.x][tempwg.playerPosition.y + 1])) {
@@ -168,6 +188,8 @@ public class Game {
         } else if (input.equals(":")) {
             boolean temp = assessmentQ();
             if (temp) {
+                System.out.print(inputfile);
+                save(inputfile);
                 exit(0);
             }
         }
@@ -211,6 +233,7 @@ public class Game {
         while (!gameStart) {
             String input = solicitNCharsInput(1);
             if (input.equals("N") || input.equals("n")) {
+                inputfile += input;
                 String seed = solicitNCharsSeed();
                 rand = Long.parseLong(seed);
                 random = new Random(rand);
