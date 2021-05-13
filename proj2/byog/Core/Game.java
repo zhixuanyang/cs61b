@@ -172,9 +172,9 @@ public class Game {
                 tempworld[tempwg.playerPosition.x]
                         [tempwg.playerPosition.y + 1] = Tileset.PLAYER;
                 tempwg.playerPosition.y = tempwg.playerPosition.y + 1;
-                inputfile += input;
-                ter.renderFrame(tempworld);
             }
+            inputfile += input;
+            ter.renderFrame(tempworld);
         } else if (input.equals("S") || input.equals("s")) {
             if (!tempwg.isWall(tempworld[tempwg.playerPosition.x][tempwg.playerPosition.y - 1])) {
                 tempworld[tempwg.playerPosition.x][tempwg.playerPosition.y] = Tileset.GRASS;
@@ -184,9 +184,9 @@ public class Game {
                 }
                 tempworld[tempwg.playerPosition.x][tempwg.playerPosition.y - 1] = Tileset.PLAYER;
                 tempwg.playerPosition.y = tempwg.playerPosition.y - 1;
-                inputfile += input;
-                ter.renderFrame(tempworld);
             }
+            inputfile += input;
+            ter.renderFrame(tempworld);
         } else if (input.equals("A") || input.equals("a")) {
             if (!tempwg.isWall(tempworld[tempwg.playerPosition.x - 1][tempwg.playerPosition.y])) {
                 tempworld[tempwg.playerPosition.x][tempwg.playerPosition.y] = Tileset.GRASS;
@@ -196,9 +196,9 @@ public class Game {
                 }
                 tempworld[tempwg.playerPosition.x - 1][tempwg.playerPosition.y] = Tileset.PLAYER;
                 tempwg.playerPosition.x = tempwg.playerPosition.x - 1;
-                inputfile += input;
-                ter.renderFrame(tempworld);
             }
+            inputfile += input;
+            ter.renderFrame(tempworld);
         } else if (input.equals("D") || input.equals("d")) {
             if (!tempwg.isWall(tempworld[tempwg.playerPosition.x + 1][tempwg.playerPosition.y])) {
                 tempworld[tempwg.playerPosition.x][tempwg.playerPosition.y] = Tileset.GRASS;
@@ -208,9 +208,9 @@ public class Game {
                 }
                 tempworld[tempwg.playerPosition.x + 1][tempwg.playerPosition.y] = Tileset.PLAYER;
                 tempwg.playerPosition.x = tempwg.playerPosition.x + 1;
-                inputfile += input;
-                ter.renderFrame(tempworld);
             }
+            inputfile += input;
+            ter.renderFrame(tempworld);
         } else if (input.equals(":")) {
             boolean temp = assessmentQ();
             if (temp) {
@@ -317,8 +317,8 @@ public class Game {
                 tempworld[tempwg.playerPosition.x]
                         [tempwg.playerPosition.y + 1] = Tileset.PLAYER;
                 tempwg.playerPosition.y = tempwg.playerPosition.y + 1;
-                inputStringfile += input;
             }
+            inputStringfile += input;
         } else if (input.equals("S") || input.equals("s")) {
             if (!tempwg.isWall(tempworld[tempwg.playerPosition.x][tempwg.playerPosition.y - 1])) {
                 tempworld[tempwg.playerPosition.x][tempwg.playerPosition.y] = Tileset.GRASS;
@@ -326,10 +326,11 @@ public class Game {
                         [tempwg.playerPosition.y - 1])) {
                     gameOver = true;
                 }
-                tempworld[tempwg.playerPosition.x][tempwg.playerPosition.y - 1] = Tileset.PLAYER;
+                tempworld[tempwg.playerPosition.x]
+                        [tempwg.playerPosition.y - 1] = Tileset.PLAYER;
                 tempwg.playerPosition.y = tempwg.playerPosition.y - 1;
-                inputStringfile += input;
             }
+            inputStringfile += input;
         } else if (input.equals("A") || input.equals("a")) {
             if (!tempwg.isWall(tempworld[tempwg.playerPosition.x - 1][tempwg.playerPosition.y])) {
                 tempworld[tempwg.playerPosition.x][tempwg.playerPosition.y] = Tileset.GRASS;
@@ -339,8 +340,8 @@ public class Game {
                 }
                 tempworld[tempwg.playerPosition.x - 1][tempwg.playerPosition.y] = Tileset.PLAYER;
                 tempwg.playerPosition.x = tempwg.playerPosition.x - 1;
-                inputStringfile += input;
             }
+            inputStringfile += input;
         } else if (input.equals("D") || input.equals("d")) {
             if (!tempwg.isWall(tempworld[tempwg.playerPosition.x + 1][tempwg.playerPosition.y])) {
                 tempworld[tempwg.playerPosition.x][tempwg.playerPosition.y] = Tileset.GRASS;
@@ -350,13 +351,12 @@ public class Game {
                 }
                 tempworld[tempwg.playerPosition.x + 1][tempwg.playerPosition.y] = Tileset.PLAYER;
                 tempwg.playerPosition.x = tempwg.playerPosition.x + 1;
-                inputStringfile += input;
             }
+            inputStringfile += input;
         } else if (input.equals(":")) {
             boolean temp = assessmentQString(String.valueOf(inputlist[i + 1]));
             if (temp) {
                 save(inputStringfile);
-                exit(0);
             }
         }
     }
@@ -384,21 +384,35 @@ public class Game {
             world = wg.initialworld();
             inputStringfile += String.valueOf(chars[0]);
             loc += 1;
+        } else if (chars[loc] == 'L' || chars[loc] == 'l') {
+            finalWorldFrame = playWithInputString(open());
+            wg.getPlayerposition(finalWorldFrame);
+            inputStringfile += open();
+            loc += 1;
+            for (int i = loc; i < chars.length; i++) {
+                movePlayerString(finalWorldFrame, wg, String.valueOf(chars[i]), chars, i);
+            }
+            return finalWorldFrame;
         }
+
+
         while (!Character.isAlphabetic(chars[loc])) {
             temp += String.valueOf(chars[loc]);
             inputStringfile += String.valueOf(chars[loc]);
             loc += 1;
         }
-        rand = Long.parseLong(temp);
-        random = new Random(rand);
+        if (chars[0] != 'L' || chars[0] != 'l') {
+            rand = Long.parseLong(temp);
+            random = new Random(rand);
+        }
         if (chars[loc] == 'S' || chars[loc] == 's') {
             finalWorldFrame = wg.playthegame(world);
             inputStringfile += String.valueOf(chars[loc]);
             loc += 1;
         }
-        for (int i = loc; i < input.length(); i++) {
-            movePlayerString(finalWorldFrame, wg, String.valueOf(chars[i]), chars, i);
+        while (loc < chars.length) {
+            movePlayerString(finalWorldFrame, wg, String.valueOf(chars[loc]), chars, loc);
+            loc += 1;
         }
         return finalWorldFrame;
     }
