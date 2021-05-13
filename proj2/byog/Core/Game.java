@@ -58,7 +58,7 @@ public class Game {
         StdDraw.text(midWidth, midHeight - 2, "Load Game (L)");
         StdDraw.text(midWidth, midHeight - 4, "Quit (Q)");
     }
-    public void GUIsetup() {
+    public void setupGUI() {
         StdDraw.setCanvasSize(WIDTH * 16, HEIGHT * 16);
         StdDraw.setXscale(0, WIDTH);
         StdDraw.setYscale(0, HEIGHT);
@@ -254,7 +254,7 @@ public class Game {
     }
 
     public void playWithKeyboard() {
-        GUIsetup();
+        setupGUI();
         drawGUI();
         while (!gameStart) {
             String input = solicitNCharsInput(1);
@@ -378,7 +378,7 @@ public class Game {
         char[] chars = input.toCharArray();
         wg = new WorldGenerator();
         world = new TETile[0][];
-        //finalWorldFrame = new TETile[0][];
+        finalWorldFrame = new TETile[0][];
         String temp = "";
         int loc = 0;
         if (chars[loc] == 'N' || chars[loc] == 'n') {
@@ -387,6 +387,7 @@ public class Game {
             loc += 1;
         } else if (chars[loc] == 'L' || chars[loc] == 'l') {
             finalWorldFrame = playWithInputString(open());
+            wg = new WorldGenerator();
             wg.getPlayerposition(finalWorldFrame);
             inputStringfile += open();
             loc += 1;
@@ -395,8 +396,7 @@ public class Game {
             }
             return finalWorldFrame;
         }
-
-
+        
         while (!Character.isAlphabetic(chars[loc])) {
             temp += String.valueOf(chars[loc]);
             inputStringfile += String.valueOf(chars[loc]);
