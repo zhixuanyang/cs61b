@@ -31,7 +31,7 @@ public class Game {
     private int midHeight = HEIGHT / 2;
     static Random random;
     private boolean gameStart;
-    String inpiutstringfile = "";
+    String inputStringfile = "";
 
     public Game() {
         gameStart = false;
@@ -305,7 +305,8 @@ public class Game {
      */
 
 
-    public void movePlayerString(TETile[][] tempworld, WorldGenerator tempwg, String input) {
+    public void movePlayerString(TETile[][] tempworld, WorldGenerator tempwg, String input,
+                                 char[] inputlist, int i) {
         if (input.equals("W") || input.equals("w")) {
             if (!tempwg.isWall(tempworld[tempwg.playerPosition.x][tempwg.playerPosition.y + 1])) {
                 tempworld[tempwg.playerPosition.x][tempwg.playerPosition.y] = Tileset.GRASS;
@@ -316,7 +317,7 @@ public class Game {
                 tempworld[tempwg.playerPosition.x]
                         [tempwg.playerPosition.y + 1] = Tileset.PLAYER;
                 tempwg.playerPosition.y = tempwg.playerPosition.y + 1;
-                inputfile += input;
+                inputStringfile += input;
             }
         } else if (input.equals("S") || input.equals("s")) {
             if (!tempwg.isWall(tempworld[tempwg.playerPosition.x][tempwg.playerPosition.y - 1])) {
@@ -327,7 +328,7 @@ public class Game {
                 }
                 tempworld[tempwg.playerPosition.x][tempwg.playerPosition.y - 1] = Tileset.PLAYER;
                 tempwg.playerPosition.y = tempwg.playerPosition.y - 1;
-                inputfile += input;
+                inputStringfile += input;
             }
         } else if (input.equals("A") || input.equals("a")) {
             if (!tempwg.isWall(tempworld[tempwg.playerPosition.x - 1][tempwg.playerPosition.y])) {
@@ -338,7 +339,7 @@ public class Game {
                 }
                 tempworld[tempwg.playerPosition.x - 1][tempwg.playerPosition.y] = Tileset.PLAYER;
                 tempwg.playerPosition.x = tempwg.playerPosition.x - 1;
-                inputfile += input;
+                inputStringfile += input;
             }
         } else if (input.equals("D") || input.equals("d")) {
             if (!tempwg.isWall(tempworld[tempwg.playerPosition.x + 1][tempwg.playerPosition.y])) {
@@ -349,15 +350,22 @@ public class Game {
                 }
                 tempworld[tempwg.playerPosition.x + 1][tempwg.playerPosition.y] = Tileset.PLAYER;
                 tempwg.playerPosition.x = tempwg.playerPosition.x + 1;
-                inputfile += input;
+                inputStringfile += input;
             }
         } else if (input.equals(":")) {
-            boolean temp = assessmentQ();
+            boolean temp = assessmentQString(String.valueOf(inputlist[i + 1]));
             if (temp) {
-                save(inputfile);
+                save(inputStringfile);
                 exit(0);
             }
         }
+    }
+
+    public boolean assessmentQString(String input) {
+        if (input.equals("Q") || input.equals("q")) {
+            return true;
+        }
+        return false;
     }
 
     public TETile[][] playWithInputString(String input) {
@@ -372,21 +380,25 @@ public class Game {
         finalWorldFrame = new TETile[0][];
         String temp = "";
         int loc = 0;
-        if (chars[0] == 'N' || chars[0] == 'n') {
+        if (chars[loc] == 'N' || chars[loc] == 'n') {
             world = wg.initialworld();
+            inputStringfile += String.valueOf(chars[0]);
             loc += 1;
         }
         while (!Character.isAlphabetic(chars[loc])) {
             temp += String.valueOf(chars[loc]);
+            inputStringfile += String.valueOf(chars[loc]);
             loc += 1;
         }
         rand = Long.parseLong(temp);
         random = new Random(rand);
         if (chars[loc] == 'S' || chars[loc] == 's') {
             finalWorldFrame = wg.playthegame(world);
+            inputStringfile += String.valueOf(chars[loc]);
+            loc += 1;
         }
         for (int i = loc; i < input.length(); i++) {
-            movePlayerString(finalWorldFrame, wg, String.valueOf(chars[i]));
+            movePlayerString(finalWorldFrame, wg, String.valueOf(chars[i]), chars, i);
         }
         return finalWorldFrame;
     }
