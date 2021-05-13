@@ -213,7 +213,6 @@ public class Game {
         } else if (input.equals(":")) {
             boolean temp = assessmentQ();
             if (temp) {
-                System.out.print(inputfile);
                 save(inputfile);
                 exit(0);
             }
@@ -266,9 +265,27 @@ public class Game {
             } else if (input.equals("q") || input.equals("Q")) {
                 exitGame();
             } else if (input.equals("L") || input.equals("l")) {
-                System.out.print(open());
                 Game game = new Game();
-                game.playWithInputString(open());
+                gameOver = false;
+                gameStart = true;
+                finalWorldFrame = game.playWithInputString(open());
+                wg = new WorldGenerator();
+                wg.getPlayerposition(finalWorldFrame);
+                inputfile += open();
+                while (!gameOver) {
+                    ter.renderFrame(finalWorldFrame);
+                    displayInfo(displayWorldclass(StdDraw.mouseX(), StdDraw.mouseY(), finalWorldFrame));
+                    if (StdDraw.hasNextKeyTyped()) {
+                        movePlayer(finalWorldFrame, wg, solicitNCharsInput(1));
+                    }
+                }
+                ter.initialize(WIDTH, HEIGHT + 4);
+                StdDraw.clear(Color.BLACK);
+                Font bigFont = new Font("Arial", Font.BOLD, 40);
+                StdDraw.setFont(bigFont);
+                StdDraw.setPenColor(Color.white);
+                StdDraw.text(Game.WIDTH / 2, Game.HEIGHT / 2 + 3, "You Won!");
+                StdDraw.show();
             }
         }
     }

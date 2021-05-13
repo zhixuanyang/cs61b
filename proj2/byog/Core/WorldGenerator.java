@@ -384,6 +384,16 @@ public class WorldGenerator {
         return t == Tileset.LOCKED_DOOR;
     }
 
+    public void getPlayerposition(TETile[][] temp) {
+        for (int i = 0; i < Game.WIDTH; i++) {
+            for (int j = 0; j < Game.HEIGHT; j++) {
+                if (temp[i][j] == Tileset.PLAYER) {
+                    playerPosition = new Position(i, j);
+                }
+            }
+        }
+    }
+
     public TETile[][] playthegame(TETile[][] temp) {
         generateMultipleRooms(temp, Tileset.GRASS);
         if (isolation[0] != null) {
