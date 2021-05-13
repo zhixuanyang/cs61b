@@ -13,7 +13,6 @@ import java.io.ObjectOutputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Random;
-
 import static java.lang.System.exit;
 
 public class Game {
@@ -35,10 +34,6 @@ public class Game {
 
     public Game() {
         gameStart = false;
-        StdDraw.setCanvasSize(WIDTH * 16, HEIGHT * 16);
-        StdDraw.setXscale(0, WIDTH);
-        StdDraw.setYscale(0, HEIGHT);
-        StdDraw.clear(Color.black);
     }
     /**
      * Method used for playing a fresh game. The game should start from the main menu.
@@ -63,7 +58,12 @@ public class Game {
         StdDraw.text(midWidth, midHeight - 2, "Load Game (L)");
         StdDraw.text(midWidth, midHeight - 4, "Quit (Q)");
     }
-
+    public void GUIsetup() {
+        StdDraw.setCanvasSize(WIDTH * 16, HEIGHT * 16);
+        StdDraw.setXscale(0, WIDTH);
+        StdDraw.setYscale(0, HEIGHT);
+        StdDraw.clear(Color.black);
+    }
 
     public String solicitNCharsInput(int n) {
         String input = "";
@@ -254,6 +254,7 @@ public class Game {
     }
 
     public void playWithKeyboard() {
+        GUIsetup();
         drawGUI();
         while (!gameStart) {
             String input = solicitNCharsInput(1);
@@ -377,7 +378,7 @@ public class Game {
         char[] chars = input.toCharArray();
         wg = new WorldGenerator();
         world = new TETile[0][];
-        finalWorldFrame = new TETile[0][];
+        //finalWorldFrame = new TETile[0][];
         String temp = "";
         int loc = 0;
         if (chars[loc] == 'N' || chars[loc] == 'n') {
