@@ -5,10 +5,7 @@ import byog.TileEngine.TETile;
 import edu.princeton.cs.introcs.StdDraw;
 import java.awt.Color;
 import java.awt.Font;
-import java.io.File;
-import java.io.ObjectOutputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
+import java.io.*;
 import java.util.Random;
 
 import static java.lang.System.exit;
@@ -135,6 +132,28 @@ public class Game {
         }
     }
 
+    public String open() {
+        File f = new File("./save_game.txt");
+        if (f.exists()) {
+            try {
+                FileInputStream fs = new FileInputStream(f);
+                ObjectInputStream os = new ObjectInputStream(fs);
+                return (String) os.readObject();
+            } catch (FileNotFoundException e) {
+                System.out.println(e);
+                exit(0);
+            } catch (IOException e) {
+                System.out.println(e);
+                exit(0);
+            } catch (ClassNotFoundException e) {
+                System.out.println("e");
+                exit(0);
+            }
+        }
+        return "";
+    }
+
+
     public void movePlayer(TETile[][] tempworld, WorldGenerator tempwg, String input) {
         if (input.equals("W") || input.equals("w")) {
             if (!tempwg.isWall(tempworld[tempwg.playerPosition.x][tempwg.playerPosition.y + 1])) {
@@ -240,6 +259,8 @@ public class Game {
                 startGame();
             } else if (input.equals("q") || input.equals("Q")) {
                 exitGame();
+            } else if (input.equals("L") || input.equals("l")) {
+                System.out.println(open());
             }
         }
     }
