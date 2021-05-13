@@ -5,7 +5,13 @@ import byog.TileEngine.TETile;
 import edu.princeton.cs.introcs.StdDraw;
 import java.awt.Color;
 import java.awt.Font;
-import java.io.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.Random;
 
 import static java.lang.System.exit;
@@ -260,7 +266,9 @@ public class Game {
             } else if (input.equals("q") || input.equals("Q")) {
                 exitGame();
             } else if (input.equals("L") || input.equals("l")) {
-                System.out.println(open());
+                System.out.print(open());
+                Game game = new Game();
+                game.playWithInputString(open());
             }
         }
     }
@@ -287,9 +295,10 @@ public class Game {
         world = new TETile[0][];
         finalWorldFrame = new TETile[0][];
         String temp = "";
-        int loc = 1;
+        int loc = 0;
         if (chars[0] == 'N' || chars[0] == 'n') {
             world = wg.initialworld();
+            loc += 1;
         }
         while (!Character.isAlphabetic(chars[loc])) {
             temp += String.valueOf(chars[loc]);
@@ -301,6 +310,9 @@ public class Game {
             finalWorldFrame = wg.playthegame(world);
         }
         ter.renderFrame(finalWorldFrame);
+        for (int i = loc; i < input.length(); i++) {
+            movePlayer(finalWorldFrame, wg, String.valueOf(chars[i]));
+        }
         return finalWorldFrame;
     }
 }
