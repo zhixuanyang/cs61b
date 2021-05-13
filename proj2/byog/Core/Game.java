@@ -372,6 +372,7 @@ public class Game {
     public TETile[][] playWithInputString(String input) {
         // and return a 2D tile representation of the world that would have been
         // drawn if the same inputs had been given to playWithKeyboard().
+        ter.initialize(WIDTH, HEIGHT);
         if (input.length() == 0) {
             exit(0);
         }
@@ -396,7 +397,7 @@ public class Game {
             }
             return finalWorldFrame;
         }
-        
+
         while (!Character.isAlphabetic(chars[loc])) {
             temp += String.valueOf(chars[loc]);
             inputStringfile += String.valueOf(chars[loc]);
@@ -415,6 +416,7 @@ public class Game {
             movePlayerString(finalWorldFrame, wg, String.valueOf(chars[loc]), chars, loc);
             loc += 1;
         }
+        ter.renderFrame(finalWorldFrame);
         return finalWorldFrame;
     }
 }

@@ -375,8 +375,13 @@ public class WorldGenerator {
     public void generatePlayerEntity(TETile[][] temp) {
         Position p = new Position(getRandomNumberUsingNextInt(0, Game.WIDTH),
                 getRandomNumberUsingNextInt(0, Game.HEIGHT));
-        if (!detectColumnsPlayer(temp, p)) {
-            detectRowsPlayer(temp, p);
+
+        while (!detectColumnsPlayer(temp, p)) {
+            while (!detectRowsPlayer(temp, p)) {
+                p = new Position(getRandomNumberUsingNextInt(0, Game.WIDTH),
+                        getRandomNumberUsingNextInt(0, Game.HEIGHT));
+            }
+            break;
         }
     }
 
