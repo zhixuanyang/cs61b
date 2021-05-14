@@ -16,12 +16,12 @@ public class Percolation {
             }
         }
         size = N;
-        disjointset = new WeightedQuickUnionUF(N * N);
+        disjointset = new WeightedQuickUnionUF(N * N + 2);
         numberofopen = 0;
     }
 
     public int xyTo1D(int r, int c) {
-        return r * size + c;
+        return r * size + c + 1;
     }
 
     public void open(int row, int col) {
@@ -32,22 +32,28 @@ public class Percolation {
             set[row][col] = true;
             numberofopen += 1;
             if (row == 0 & col == 0) {
+                disjointset.union(0, xyTo1D(row, col));
                 checkdown(row, col);
                 checkright(row, col);
             } else if (row == size - 1 & col == 0) {
+                disjointset.union(size * size + 1, xyTo1D(row, col));
                 checkright(row, col);
                 checkup(row, col);
             } else if (row == 0 & col == size - 1) {
+                disjointset.union(0, xyTo1D(row, col));
                 checkdown(row, col);
                 checkleft(row, col);
             } else if (row == size -1 & col == size - 1) {
+                disjointset.union(size * size + 1, xyTo1D(row, col));
                 checkup(row, col);
                 checkleft(row, col);
             } else if (row == 0) {
+                disjointset.union(0, xyTo1D(row, col));
                 checkdown(row, col);
                 checkleft(row, col);
                 checkright(row, col);
             } else if (row == size - 1) {
+                disjointset.union(size * size + 1, xyTo1D(row, col));
                 checkup(row, col);
                 checkleft(row, col);
                 checkright(row, col);
@@ -109,7 +115,11 @@ public class Percolation {
         if (row >= size || col >= size || row < 0 || col < 0) {
             throw new IndexOutOfBoundsException("The input out of the range");
         }
-        return false;
+        return disjointset.connected(0, xyTo1D(row, col));
     }
-    
+
+    public boolean percolates() {
+        return disjointset.connected(0, size * size + 1);
+    }
+
 }
