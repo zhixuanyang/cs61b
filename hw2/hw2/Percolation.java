@@ -36,15 +36,19 @@ public class Percolation {
                 checkdown(row, col);
                 checkright(row, col);
             } else if (row == size - 1 & col == 0) {
-                disjointset.union(size * size + 1, xyTo1D(row, col));
+                if (isOpen(row, col + 1) || isOpen(row - 1, col)) {
+                    disjointset.union(size * size + 1, xyTo1D(row, col));
+                }
                 checkright(row, col);
                 checkup(row, col);
             } else if (row == 0 & col == size - 1) {
                 disjointset.union(0, xyTo1D(row, col));
                 checkdown(row, col);
                 checkleft(row, col);
-            } else if (row == size -1 & col == size - 1) {
-                disjointset.union(size * size + 1, xyTo1D(row, col));
+            } else if (row == size - 1 & col == size - 1) {
+                if (isOpen(row, col - 1) || isOpen(row - 1, col)) {
+                    disjointset.union(size * size + 1, xyTo1D(row, col));
+                }
                 checkup(row, col);
                 checkleft(row, col);
             } else if (row == 0) {
@@ -53,19 +57,30 @@ public class Percolation {
                 checkleft(row, col);
                 checkright(row, col);
             } else if (row == size - 1) {
-                disjointset.union(size * size + 1, xyTo1D(row, col));
+                if (isOpen(row, col - 1) || isOpen(row, col + 1) || isOpen(row - 1, col)) {
+                    disjointset.union(size * size + 1, xyTo1D(row, col));
+                }
                 checkup(row, col);
                 checkleft(row, col);
                 checkright(row, col);
             } else if (col == 0) {
+                if (row + 1 == size - 1) {
+                    disjointset.union(size * size + 1, xyTo1D(row + 1, col));
+                }
                 checkdown(row, col);
                 checkup(row, col);
                 checkright(row, col);
             } else if (col == size - 1) {
+                if (row + 1 == size - 1) {
+                    disjointset.union(size * size + 1, xyTo1D(row + 1, col));
+                }
                 checkdown(row, col);
                 checkup(row, col);
                 checkleft(row, col);
             } else {
+                if (row + 1 == size - 1) {
+                    disjointset.union(size * size + 1, xyTo1D(row + 1, col));
+                }
                 checkdown(row, col);
                 checkup(row, col);
                 checkleft(row, col);
@@ -73,6 +88,8 @@ public class Percolation {
             }
         }
     }
+
+
 
     public void checkup(int row, int col) {
         if (set[row - 1][col]) {
@@ -121,5 +138,4 @@ public class Percolation {
     public boolean percolates() {
         return disjointset.connected(0, size * size + 1);
     }
-
 }
