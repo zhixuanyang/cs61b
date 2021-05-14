@@ -6,12 +6,14 @@ public class Percolation {
     int size;
     int numberofopen;
     WeightedQuickUnionUF disjointset;
+
     public Percolation(int N) {
+        set = new boolean[N][N];
         if (N <= 0) {
             throw new IllegalArgumentException("N should be a positive number!");
         }
         for (int i = 0; i < N; i++) {
-            for (int j = 0; j < N; i++) {
+            for (int j = 0; j < N; j++) {
                 set[i][j] = false;
             }
         }
@@ -64,27 +66,27 @@ public class Percolation {
                 checkleft(row, col);
                 checkright(row, col);
             } else if (col == 0) {
-                if (row + 1 == size - 1) {
-                    disjointset.union(size * size + 1, xyTo1D(row + 1, col));
-                }
                 checkdown(row, col);
                 checkup(row, col);
                 checkright(row, col);
+                if (row + 1 == size - 1 & disjointset.connected(xyTo1D(row, col), 0)) {
+                    disjointset.union(size * size + 1, xyTo1D(row + 1, col));
+                }
             } else if (col == size - 1) {
-                if (row + 1 == size - 1) {
-                    disjointset.union(size * size + 1, xyTo1D(row + 1, col));
-                }
                 checkdown(row, col);
                 checkup(row, col);
                 checkleft(row, col);
-            } else {
-                if (row + 1 == size - 1) {
+                if (row + 1 == size - 1 & disjointset.connected(xyTo1D(row, col), 0)) {
                     disjointset.union(size * size + 1, xyTo1D(row + 1, col));
                 }
+            } else {
                 checkdown(row, col);
                 checkup(row, col);
                 checkleft(row, col);
                 checkright(row, col);
+                if (row + 1 == size - 1 & disjointset.connected(xyTo1D(row, col), 0)) {
+                    disjointset.union(size * size + 1, xyTo1D(row + 1, col));
+                }
             }
         }
     }
