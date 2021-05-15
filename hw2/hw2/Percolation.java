@@ -9,10 +9,10 @@ public class Percolation {
     private WeightedQuickUnionUF disjointset2;
 
     public Percolation(int N) {
-        set = new boolean[N][N];
         if (N <= 0) {
             throw new IllegalArgumentException("N should be a positive number!");
         }
+        set = new boolean[N][N];
         for (int i = 0; i < N; i++) {
             for (int j = 0; j < N; j++) {
                 set[i][j] = false;
@@ -31,6 +31,12 @@ public class Percolation {
     public void open(int row, int col) {
         if (row >= size || col >= size || row < 0 || col < 0) {
             throw new IndexOutOfBoundsException("The input out of the range");
+        }
+        if (size == 1 & !set[row][col]) {
+            set[row][col] = true;
+            disjointset.union(0, xyTo1D(row, col));
+            disjointset2.union(0, xyTo1D(row, col));
+            disjointset.union(0, size * size + 1);
         }
         if (!set[row][col]) {
             set[row][col] = true;
