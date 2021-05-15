@@ -34,6 +34,7 @@ public class Percolation {
         }
         if (size == 1 & !set[row][col]) {
             set[row][col] = true;
+            numberofopen += 1;
             disjointset.union(0, xyTo1D(row, col));
             disjointset2.union(0, xyTo1D(row, col));
             disjointset.union(0, size * size + 1);
