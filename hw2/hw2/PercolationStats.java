@@ -25,7 +25,7 @@ public class PercolationStats {
                     per.open(row, col);
                 }
             }
-            result[i] = (double) per.numberOfOpenSites() / (double) size * size;
+            result[i] = (double) per.numberOfOpenSites() / (double) (size * size);
         }
     }
 
