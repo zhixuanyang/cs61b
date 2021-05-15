@@ -4,10 +4,11 @@ import edu.princeton.cs.introcs.StdRandom;
 import edu.princeton.cs.introcs.StdStats;
 
 public class PercolationStats {
-    Percolation per;
-    int size;
-    int times;
-    double[] result;
+    private Percolation per;
+    private int size;
+    private int times;
+    private double[] result;
+
     public PercolationStats(int N, int T, PercolationFactory pf) {
         if (N <= 0 || T <= 0) {
             throw new IllegalArgumentException("N and T should be positive numbers!");
@@ -24,7 +25,7 @@ public class PercolationStats {
                     per.open(row, col);
                 }
             }
-            result[i] = (double) per.numberofopen / (double) size * size;
+            result[i] = (double) per.numberOfOpenSites() / (double) size * size;
         }
     }
 

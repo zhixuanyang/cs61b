@@ -2,11 +2,11 @@ package hw2;
 import edu.princeton.cs.algs4.WeightedQuickUnionUF;
 
 public class Percolation {
-    boolean[][] set;
-    int size;
-    int numberofopen;
-    WeightedQuickUnionUF disjointset;
-    WeightedQuickUnionUF disjointset2;
+    private boolean[][] set;
+    private int size;
+    private int numberofopen;
+    private WeightedQuickUnionUF disjointset;
+    private WeightedQuickUnionUF disjointset2;
 
     public Percolation(int N) {
         set = new boolean[N][N];
@@ -24,7 +24,7 @@ public class Percolation {
         numberofopen = 0;
     }
 
-    public int xyTo1D(int r, int c) {
+    private int xyTo1D(int r, int c) {
         return r * size + c + 1;
     }
 
@@ -81,35 +81,33 @@ public class Percolation {
         }
     }
 
-    public void checkup(int row, int col) {
+    private void checkup(int row, int col) {
         if (set[row - 1][col]) {
             disjointset.union(xyTo1D(row, col), xyTo1D(row - 1, col));
             disjointset2.union(xyTo1D(row, col), xyTo1D(row - 1, col));
         }
     }
 
-    public void checkdown(int row, int col) {
+    private void checkdown(int row, int col) {
         if (set[row + 1][col]) {
             disjointset.union(xyTo1D(row, col), xyTo1D(row + 1, col));
             disjointset2.union(xyTo1D(row, col), xyTo1D(row + 1, col));
         }
     }
 
-    public void checkleft(int row, int col) {
+    private void checkleft(int row, int col) {
         if (set[row][col - 1]) {
             disjointset.union(xyTo1D(row, col), xyTo1D(row, col - 1));
             disjointset2.union(xyTo1D(row, col), xyTo1D(row, col - 1));
         }
     }
 
-    public void checkright(int row, int col) {
+    private void checkright(int row, int col) {
         if (set[row][col + 1]) {
             disjointset.union(xyTo1D(row, col), xyTo1D(row, col + 1));
             disjointset2.union(xyTo1D(row, col), xyTo1D(row, col + 1));
         }
     }
-
-
 
     public boolean isOpen(int row, int col) {
         if (row >= size || col >= size || row < 0 || col < 0) {
@@ -131,5 +129,9 @@ public class Percolation {
 
     public boolean percolates() {
         return disjointset.connected(0, size * size + 1);
+    }
+
+    public static void main(String[] args) {
+
     }
 }
