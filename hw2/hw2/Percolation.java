@@ -6,7 +6,7 @@ public class Percolation {
     int size;
     int numberofopen;
     WeightedQuickUnionUF disjointset;
-    WeightedQuickUnionUF disjointset_percolation;
+    WeightedQuickUnionUF disjointset2;
 
     public Percolation(int N) {
         set = new boolean[N][N];
@@ -20,7 +20,7 @@ public class Percolation {
         }
         size = N;
         disjointset = new WeightedQuickUnionUF(N * N + 2);
-        disjointset_percolation = new WeightedQuickUnionUF(N * N + 1);
+        disjointset2 = new WeightedQuickUnionUF(N * N + 1);
         numberofopen = 0;
     }
 
@@ -37,7 +37,7 @@ public class Percolation {
             numberofopen += 1;
             if (row == 0 & col == 0) {
                 disjointset.union(0, xyTo1D(row, col));
-                disjointset_percolation.union(0, xyTo1D(row, col));
+                disjointset2.union(0, xyTo1D(row, col));
                 checkdown(row, col);
                 checkright(row, col);
             } else if (row == size - 1 & col == 0) {
@@ -46,7 +46,7 @@ public class Percolation {
                 checkup(row, col);
             } else if (row == 0 & col == size - 1) {
                 disjointset.union(0, xyTo1D(row, col));
-                disjointset_percolation.union(0, xyTo1D(row, col));
+                disjointset2.union(0, xyTo1D(row, col));
                 checkdown(row, col);
                 checkleft(row, col);
             } else if (row == size - 1 & col == size - 1) {
@@ -55,7 +55,7 @@ public class Percolation {
                 checkleft(row, col);
             } else if (row == 0) {
                 disjointset.union(0, xyTo1D(row, col));
-                disjointset_percolation.union(0, xyTo1D(row, col));
+                disjointset2.union(0, xyTo1D(row, col));
                 checkdown(row, col);
                 checkleft(row, col);
                 checkright(row, col);
@@ -84,28 +84,28 @@ public class Percolation {
     public void checkup(int row, int col) {
         if (set[row - 1][col]) {
             disjointset.union(xyTo1D(row, col), xyTo1D(row - 1, col));
-            disjointset_percolation.union(xyTo1D(row, col), xyTo1D(row - 1, col));
+            disjointset2.union(xyTo1D(row, col), xyTo1D(row - 1, col));
         }
     }
 
     public void checkdown(int row, int col) {
         if (set[row + 1][col]) {
             disjointset.union(xyTo1D(row, col), xyTo1D(row + 1, col));
-            disjointset_percolation.union(xyTo1D(row, col), xyTo1D(row + 1, col));
+            disjointset2.union(xyTo1D(row, col), xyTo1D(row + 1, col));
         }
     }
 
     public void checkleft(int row, int col) {
         if (set[row][col - 1]) {
             disjointset.union(xyTo1D(row, col), xyTo1D(row, col - 1));
-            disjointset_percolation.union(xyTo1D(row, col), xyTo1D(row, col - 1));
+            disjointset2.union(xyTo1D(row, col), xyTo1D(row, col - 1));
         }
     }
 
     public void checkright(int row, int col) {
         if (set[row][col + 1]) {
             disjointset.union(xyTo1D(row, col), xyTo1D(row, col + 1));
-            disjointset_percolation.union(xyTo1D(row, col), xyTo1D(row, col + 1));
+            disjointset2.union(xyTo1D(row, col), xyTo1D(row, col + 1));
         }
     }
 
@@ -126,7 +126,7 @@ public class Percolation {
         if (row >= size || col >= size || row < 0 || col < 0) {
             throw new IndexOutOfBoundsException("The input out of the range");
         }
-        return disjointset_percolation.connected(0, xyTo1D(row, col));
+        return disjointset2.connected(0, xyTo1D(row, col));
     }
 
     public boolean percolates() {
