@@ -1,5 +1,6 @@
 package lab9;
 
+import java.lang.reflect.Array;
 import java.util.Iterator;
 import java.util.Set;
 
@@ -53,19 +54,41 @@ public class MyHashMap<K, V> implements Map61B<K, V> {
      */
     @Override
     public V get(K key) {
-        throw new UnsupportedOperationException();
+        int temp = hash(key);
+        return buckets[temp].get(key);
     }
 
+    private void resize(int capacity) {
+        ArrayMap<K, V>[] oldBuckets = buckets;
+        buckets = new ArrayMap[capacity];
+        for (int i = 0; i < buckets.length; i += 1) {
+            buckets[i] = new ArrayMap<>();
+        }
+        for (ArrayMap<K, V> oldBucket : oldBuckets) {
+            for (K key : oldBucket.keySet()) {
+                V value = oldBucket.get(key);
+                int hash = hash(key);
+                buckets[hash].put(key, value);
+            }
+        }
+    }
     /* Associates the specified value with the specified key in this map. */
     @Override
     public void put(K key, V value) {
-        throw new UnsupportedOperationException();
+        if (loadFactor() > MAX_LF) {
+           resize(size * 2);
+        }
+        int temp = hash(key);
+        if (!buckets[temp].containsKey(key)) {
+            size += 1;
+        }
+        buckets[temp].put(key, value);
     }
 
     /* Returns the number of key-value mappings in this map. */
     @Override
     public int size() {
-        throw new UnsupportedOperationException();
+        return size;
     }
 
     //////////////// EVERYTHING BELOW THIS LINE IS OPTIONAL ////////////////
