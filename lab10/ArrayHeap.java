@@ -27,24 +27,21 @@ public class ArrayHeap<T> implements ExtrinsicPQ<T> {
      * Returns the index of the node to the left of the node at i.
      */
     private static int leftIndex(int i) {
-        /* TODO: Your code here! */
-        return 0;
+        return 2 * i;
     }
 
     /**
      * Returns the index of the node to the right of the node at i.
      */
     private static int rightIndex(int i) {
-        /* TODO: Your code here! */
-        return 0;
+        return 2 * i + 1;
     }
 
     /**
      * Returns the index of the node that is the parent of the node at i.
      */
     private static int parentIndex(int i) {
-        /* TODO: Your code here! */
-        return 0;
+        return i / 2;
     }
 
     /**
@@ -106,9 +103,15 @@ public class ArrayHeap<T> implements ExtrinsicPQ<T> {
     private void swim(int index) {
         // Throws an exception if index is invalid. DON'T CHANGE THIS LINE.
         validateSinkSwimArg(index);
-
-        /** TODO: Your code here. */
-        return;
+        int curr = index;
+        int parent = parentIndex(index);
+        if (parent == 0) {
+            return;
+        }
+        if (min(curr, parent) == curr) {
+            swap(curr, parent);
+            swim(parent);
+        }
     }
 
     /**
@@ -118,7 +121,20 @@ public class ArrayHeap<T> implements ExtrinsicPQ<T> {
         // Throws an exception if index is invalid. DON'T CHANGE THIS LINE.
         validateSinkSwimArg(index);
 
-        /** TODO: Your code here. */
+        int curr = index;
+        int right = rightIndex(index);
+        int left = leftIndex(index);
+        if (min(curr, left) == left & min(curr, right) == right) {
+            int temp = min(left, right);
+            swap(curr, temp);
+            sink(temp);
+        } else if (min(curr, left) == left) {
+            swap(curr, left);
+            sink(left);
+        } else if (min(curr, right) == right) {
+            swap(curr, right);
+            sink(right);
+        }
         return;
     }
 
