@@ -15,7 +15,7 @@ public class Solver {
         private SearchNode prev;
         private int estimated;
 
-        public SearchNode(WorldState ws, int moves, SearchNode prev) {
+        SearchNode(WorldState ws, int moves, SearchNode prev) {
             this.ws = ws;
             this.move = moves;
             this.prev = prev;

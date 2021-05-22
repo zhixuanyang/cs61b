@@ -67,7 +67,7 @@ public class Board implements WorldState {
         int result = 0;
         for (int i = 0; i < size; i++) {
             for (int j = 0; j < size; j++) {
-                if (xyToValue(i, j) == size * size) {
+                if (tiles[i][j] == BLANK) {
                     continue;
                 }
                 if (tiles[i][j] != xyToValue(i, j)) {
@@ -82,7 +82,7 @@ public class Board implements WorldState {
         int result = 0;
         for (int i = 0; i < size; i++) {
             for (int j = 0; j < size; j++) {
-                if (xyToValue(i, j) == size * size) {
+                if (tiles[i][j] == BLANK) {
                     continue;
                 }
                 if (tiles[i][j] != xyToValue(i, j)) {
@@ -117,6 +117,11 @@ public class Board implements WorldState {
             return false;
         }
         Board board1 = (Board) y;
+
+        if (size != board1.size) {
+            return false;
+        }
+
         for (int i = 0; i < size; i++) {
             for (int j = 0; j < size; j++) {
                 if (board1.tiles[i][j] != tiles[i][j]) {
