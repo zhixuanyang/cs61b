@@ -93,17 +93,17 @@ public class Board implements WorldState {
         return result;
     }
 
-    public int xyToValue(int i, int j) {
+    private int xyToValue(int i, int j) {
         return i * size + j + 1;
     }
 
-    public int backToIndex(int value, int i, int j) {
-        int temp = value - 1;
-        int row = temp / size;
-        int col = temp % size;
-        return Math.abs(row - i) + Math.abs(col - j);
+    private int backToIndex(int value, int i, int j) {
+        int row = (value - 1) / size;
+        int col = (value - 1) % size;
+        return Math.abs(i - row) + Math.abs(j - col);
     }
 
+    @Override
     public int estimatedDistanceToGoal() {
         return manhattan();
     }

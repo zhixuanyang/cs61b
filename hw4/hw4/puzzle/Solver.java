@@ -9,7 +9,7 @@ public class Solver {
     private HashMap<WorldState, Integer> hm = new HashMap<>();
     private Stack<WorldState> path = new Stack<>();
 
-    public class SearchNode implements Comparable<SearchNode> {
+    private class SearchNode implements Comparable<SearchNode> {
         private WorldState ws;
         private int move;
         private SearchNode prev;
