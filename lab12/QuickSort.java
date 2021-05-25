@@ -63,12 +63,17 @@ public class QuickSort {
     public static <Item extends Comparable> Queue<Item> quickSort(
             Queue<Item> items) {
         // Your code here!
+        if (items.size() <= 1) {
+            return items;
+        }
         Queue<Item> result;
         Queue<Item> less = new Queue<>();
         Queue<Item> equal = new Queue<>();
         Queue<Item> greater = new Queue<>();
         Item pivot = getRandomItem(items);
         partition(items, pivot, less, equal, greater);
+        less = quickSort(less);
+        greater = quickSort(greater);
         result = catenate(less, equal);
         result = catenate(result, greater);
         return result;
