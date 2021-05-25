@@ -35,7 +35,13 @@ public class MergeSort {
     private static <Item extends Comparable> Queue<Queue<Item>>
             makeSingleItemQueues(Queue<Item> items) {
         // Your code here!
-        return null;
+        Queue<Queue<Item>> result = new Queue<>();
+        for (Item item : items) {
+            Queue<Item> temp = new Queue<>();
+            temp.enqueue(item);
+            result.enqueue(temp);
+        }
+        return result;
     }
 
     /**
@@ -54,13 +60,49 @@ public class MergeSort {
     private static <Item extends Comparable> Queue<Item> mergeSortedQueues(
             Queue<Item> q1, Queue<Item> q2) {
         // Your code here!
-        return null;
+        Queue<Item> result = new Queue<>();
+        int totalsize = q1.size() + q2.size();
+        for (int i = 0; i < totalsize; i++) {
+            result.enqueue(getMin(q1, q2));
+        }
+        return result;
     }
 
     /** Returns a Queue that contains the given items sorted from least to greatest. */
     public static <Item extends Comparable> Queue<Item> mergeSort(
             Queue<Item> items) {
         // Your code here!
-        return items;
+        if (items.size() <= 1) {
+            return items;
+        }
+        Queue<Queue<Item>> itemQueues = makeSingleItemQueues(items);
+        Queue<Item> itemQueueLeft;
+        Queue<Item> itemQueueRight;
+
+        while (itemQueues.size() != 1) {
+            itemQueueLeft = itemQueues.dequeue();
+            itemQueueRight = itemQueues.dequeue();
+            itemQueues.enqueue(mergeSortedQueues(itemQueueLeft, itemQueueRight));
+        }
+        return itemQueues.dequeue();
+    }
+
+    public static void main(String[] args) {
+        Queue<Integer> original = new Queue<>();
+        original.enqueue(3);
+        original.enqueue(2);
+        original.enqueue(8);
+        original.enqueue(10);
+        original.enqueue(6);
+        original.enqueue(5);
+        original.enqueue(18);
+        original.enqueue(7);
+        original.enqueue(120);
+        original.enqueue(0);
+        original.enqueue(1);
+        System.out.println(original);
+        Queue<Integer> test = MergeSort.mergeSort(original);
+        System.out.println(original);
+        System.out.println(test);
     }
 }
