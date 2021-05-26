@@ -26,8 +26,8 @@ public class RadixSort {
             temp[i] = asciis[i];
         }
 
-        for (int i = max_Length - 1; i >= 0; i--) {
-            sortHelperLSD(temp, i);
+        for (int i = 0; i < max_Length; i++) {
+            sortHelperLSD(temp, max_Length - i - 1);
         }
         return temp;
     }
