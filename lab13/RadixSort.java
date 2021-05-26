@@ -40,12 +40,12 @@ public class RadixSort {
      */
     private static void sortHelperLSD(String[] asciis, int index) {
         // Optional LSD helper method for required LSD radix sort
-        int[] count = new int[256];
+        int[] count = new int[256 + 1];
         for (String item : asciis) {
             int code = charAtOrMinChar(index, item);
             count[code]++;
         }
-        int[] start = new int[256];
+        int[] start = new int[256 + 1];
         int pos = 0;
         for (int i = 0; i < start.length; i++) {
             start[i] = pos;
