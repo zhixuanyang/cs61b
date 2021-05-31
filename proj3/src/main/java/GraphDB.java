@@ -8,6 +8,7 @@ import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 import java.util.Map;
 import java.util.HashMap;
+import java.util.Comparator;
 import java.util.HashSet;
 
 /**
@@ -185,6 +186,29 @@ public class GraphDB {
      */
     double lat(long v) {
         return vertex.get(v).lat();
+    }
+
+    public Comparator<Long> getNodeComparator() {
+        return new NodeComparator();
+    }
+
+    class NodeComparator implements Comparator<Long> {
+        @Override
+        public int compare(Long v, Long w) {
+            return Double.compare(vertex.get(v).priority, vertex.get(w).priority);
+        }
+    }
+
+    public void changePriority(long v, double newPriority) {
+        vertex.get(v).priority = newPriority;
+    }
+
+    public double getDistTo(long v) {
+        return vertex.get(v).distTo;
+    }
+
+    public void changeDistTo(long v, double newDistTo) {
+        vertex.get(v).distTo = newDistTo;
     }
 
     @Override

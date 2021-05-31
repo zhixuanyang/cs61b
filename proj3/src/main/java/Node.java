@@ -7,7 +7,8 @@ public class Node {
     private double lat;
     private String name;
     private List<Long> adj;
-
+    double priority = 0;
+    double distTo = 0;
 
     void setName(String name) {
         this.name = name;

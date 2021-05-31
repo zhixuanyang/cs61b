@@ -1,16 +1,13 @@
-import java.util.Stack;
 import java.util.List;
 import java.util.PriorityQueue;
 import java.util.Set;
 import java.util.HashSet;
 import java.util.HashMap;
 import java.util.regex.Matcher;
-import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.Map;
 import java.util.regex.Pattern;
 import java.util.Objects;
-import java.util.Iterator;
-import java.util.Comparator;
 
 /**
  * This class provides a shortestPath method for finding routes between two points
@@ -22,67 +19,65 @@ import java.util.Comparator;
  */
 public class Router {
 
-    public static List<Long> shortestPath(GraphDB g, double stlon, double stlat,
-                                          double destlon, double destlat) {
-        Node s = g.vertex.get(g.closest(stlon, stlat));
-        Node t = g.vertex.get(g.closest(destlon, destlat));
-        Iterator<Long> i = g.vertex.keySet().iterator();
-        Map<Long, Double> passedDistance = new HashMap<>();
-        Map<Long, Double> estimateDistance = new HashMap<>();
-        List<Long> returnList = new ArrayList<>();
-        while (i.hasNext()) {
-            Long vID = i.next();
-            passedDistance.put(vID, Double.POSITIVE_INFINITY);
-            estimateDistance.put(vID, g.distance(vID, t.id()));
-        }
+    public static List<Long> shortestPath(GraphDB g, double stlon, double stlat, double destlon,
+                                          double destlat) {
+        long stNode = g.closest(stlon, stlat);
+        long destNode = g.closest(destlon, destlat);
         Map<Long, Long> edgeTo = new HashMap<>();
-        Set<Long> marked = new HashSet<>();
-        Comparator<Long> cmp = new Comparator<Long>() {
-            @Override
-            public int compare(Long o1, Long o2) {
-                if (passedDistance.get(o1) + estimateDistance.get(o1)
-                        < passedDistance.get(o2) + estimateDistance.get(o2)) {
-                    return -1;
-                } else if (passedDistance.get(o1) + estimateDistance.get(o1)
-                        == passedDistance.get(o2) + estimateDistance.get(o2)) {
-                    return  0;
-                } else {
-                    return 1;
-                }
-            }
-        };
-        PriorityQueue<Long> pq = new PriorityQueue<Long>(cmp);
+        Set<Long> isVisited = new HashSet<>();
 
-        passedDistance.replace(s.id(), 0.0);
-        pq.add(s.id());
-        long vID = pq.poll();
-        marked.add(vID);
-        while (vID != t.id()) {
-            for (long wID : g.adjacent(vID)) {
-                if (passedDistance.get(vID) + g.distance(vID, wID) < passedDistance.get(wID)) {
-                    passedDistance.replace(wID, passedDistance.get(vID) + g.distance(wID, vID));
-                    edgeTo.put(wID, vID);
-                }
-                pq.add(wID);
-            }
-            vID = pq.poll();
-            while (marked.contains(vID)) {
-                vID = pq.poll();
-            }
-            marked.add(vID);
+        PriorityQueue<Long> pq = new PriorityQueue<>(g.getNodeComparator());
+        for (long node : g.vertices()) {
+            g.changeDistTo(node, Double.POSITIVE_INFINITY);
         }
-        Stack<Long> stack = new Stack<>();
+        g.changeDistTo(stNode, 0);
+        pq.add(stNode);
 
-        Long id = t.id();
-        stack.add(id);
-        while (id != s.id()) {
-            stack.add(edgeTo.get(id));
-            id = edgeTo.get(id);
+        while (!pq.isEmpty()) {
+            long v = pq.poll();
+            if (isVisited.contains(v)) {
+                continue;
+            }
+            if (v == destNode) {
+                break;
+            }
+            isVisited.add(v);
+            for (long w : g.adjacent(v)) {
+                relax(g, edgeTo, pq, v, w, destNode);
+            }
         }
-        while (!stack.empty()) {
-            returnList.add(stack.pop());
+
+        List<Long> res = new LinkedList<>();
+        res.add(destNode);
+        while (destNode != stNode) {
+            // cannot reach destNode
+            if (edgeTo.get(destNode) == null) {
+                return new LinkedList<>();
+            }
+            res.add(0, edgeTo.get(destNode));
+            destNode = edgeTo.get(destNode);
         }
-        return returnList;
+
+        // clean
+        for (Long node : g.vertices()) {
+            g.changePriority(node, 0);
+        }
+
+        return res;
+    }
+
+    private static void relax(GraphDB g, Map<Long, Long> edgeTo, PriorityQueue<Long> pq, long v,
+                              long w, long destNode) {
+        // dijkstra
+        if (g.getDistTo(v) + g.distance(v, w) < g.getDistTo(w)) {
+            g.changeDistTo(w, g.getDistTo(v) + g.distance(v, w));
+
+            // A* search
+            g.changePriority(w, g.getDistTo(w) + g.distance(w, destNode));
+            pq.add(w);
+
+            edgeTo.put(w, v);
+        }
     }
 
     /**
