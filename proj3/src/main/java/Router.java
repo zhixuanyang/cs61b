@@ -2,10 +2,9 @@ import java.util.List;
 import java.util.PriorityQueue;
 import java.util.Set;
 import java.util.HashSet;
-import java.util.HashMap;
 import java.util.regex.Matcher;
 import java.util.LinkedList;
-import java.util.Map;
+import java.util.Comparator;
 import java.util.regex.Pattern;
 import java.util.Objects;
 
@@ -19,65 +18,55 @@ import java.util.Objects;
  */
 public class Router {
 
-    public static List<Long> shortestPath(GraphDB g, double stlon, double stlat, double destlon,
-                                          double destlat) {
-        long stNode = g.closest(stlon, stlat);
-        long destNode = g.closest(destlon, destlat);
-        Map<Long, Long> edgeTo = new HashMap<>();
-        Set<Long> isVisited = new HashSet<>();
+    public static List<Long> shortestPath(GraphDB g, double stlon, double stlat,
+                                          double destlon, double destlat) {
+        //获取最近的节点
+        long startNode = g.closest(stlon, stlat);
+        long endNode = g.closest(destlon, destlat);
+        List<Long> movePath = new LinkedList<>();
 
-        PriorityQueue<Long> pq = new PriorityQueue<>(g.getNodeComparator());
-        for (long node : g.vertices()) {
-            g.changeDistTo(node, Double.POSITIVE_INFINITY);
-        }
-        g.changeDistTo(stNode, 0);
-        pq.add(stNode);
-
-        while (!pq.isEmpty()) {
-            long v = pq.poll();
-            if (isVisited.contains(v)) {
-                continue;
-            }
-            if (v == destNode) {
-                break;
-            }
-            isVisited.add(v);
-            for (long w : g.adjacent(v)) {
-                relax(g, edgeTo, pq, v, w, destNode);
+        //建立TrackNode类，追踪每个节点的父节点，便于寻找最短路径
+        class TrackNode {
+            long id;
+            TrackNode parent;
+            double moveDistance;
+            Double priority;
+            TrackNode(long id, TrackNode parent) {
+                this.id = id;
+                this.moveDistance = parent == null ? 0 : parent.moveDistance
+                        + g.distance(id, parent.id);
+                this.priority = this.moveDistance + g.distance(id, endNode); //A*
+                this.parent = parent;
             }
         }
 
-        List<Long> res = new LinkedList<>();
-        res.add(destNode);
-        while (destNode != stNode) {
-            // cannot reach destNode
-            if (edgeTo.get(destNode) == null) {
-                return new LinkedList<>();
+        //最小优先队列所用的比较器
+        class NodeComparator implements Comparator<TrackNode> {
+            @Override
+            public int compare(TrackNode first, TrackNode second) {
+                return Double.compare(first.priority, second.priority);
             }
-            res.add(0, edgeTo.get(destNode));
-            destNode = edgeTo.get(destNode);
         }
 
-        // clean
-        for (Long node : g.vertices()) {
-            g.changePriority(node, 0);
+        PriorityQueue<TrackNode> pq = new PriorityQueue<>(new NodeComparator());
+        //起始节点，其父节点为空
+        TrackNode currentNode = new TrackNode(startNode, null);
+        Set<Long> marked = new HashSet<>();
+        //Java中实现A*算法不能用递归
+        while (!(currentNode.id == endNode)) {
+            for (long nextNode: g.adjacent(currentNode.id)) {
+                if (currentNode.parent == null || !(nextNode == currentNode.parent.id)
+                        && !marked.contains(nextNode)) {
+                    pq.add(new TrackNode(nextNode, currentNode));
+                }
+            }
+            currentNode = pq.poll();
+            marked.add(currentNode.id); //重要！！！将考虑过的节点做标记，这个节点已经是最短路径，不再重复计算
         }
-
-        return res;
-    }
-
-    private static void relax(GraphDB g, Map<Long, Long> edgeTo, PriorityQueue<Long> pq, long v,
-                              long w, long destNode) {
-        // dijkstra
-        if (g.getDistTo(v) + g.distance(v, w) < g.getDistTo(w)) {
-            g.changeDistTo(w, g.getDistTo(v) + g.distance(v, w));
-
-            // A* search
-            g.changePriority(w, g.getDistTo(w) + g.distance(w, destNode));
-            pq.add(w);
-
-            edgeTo.put(w, v);
+        for (TrackNode n = currentNode; n != null; n = n.parent) {
+            movePath.add(0, n.id);
         }
+        return movePath;
     }
 
     /**
