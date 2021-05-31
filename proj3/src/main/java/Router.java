@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.Map;
 import java.util.regex.Pattern;
 import java.util.Objects;
+import java.util.Iterator;
 import java.util.Comparator;
 
 /**
@@ -23,19 +24,19 @@ public class Router {
 
     public static List<Long> shortestPath(GraphDB g, double stlon, double stlat,
                                           double destlon, double destlat) {
-        List<Long> result = new ArrayList<>();
-        Stack<Long> tempStack = new Stack<>();
+        Node s = g.vertex.get(g.closest(stlon, stlat));
+        Node t = g.vertex.get(g.closest(destlon, destlat));
+        Iterator<Long> i = g.vertex.keySet().iterator();
         Map<Long, Double> passedDistance = new HashMap<>();
         Map<Long, Double> estimateDistance = new HashMap<>();
-        long startId = g.closest(stlon, stlat);
-        Node start = g.vertex.get(startId);
-        long endId = g.closest(destlon, destlat);
-        Node end = g.vertex.get(endId);
-        for (long id : g.vertex.keySet()) {
-            passedDistance.put(id, Double.POSITIVE_INFINITY);
-            estimateDistance.put(id, g.distance(id, end.id()));
+        List<Long> returnList = new ArrayList<>();
+        while (i.hasNext()) {
+            Long vID = i.next();
+            passedDistance.put(vID, Double.POSITIVE_INFINITY);
+            estimateDistance.put(vID, g.distance(vID, t.id()));
         }
-        Set<Long> makred = new HashSet<>();
+        Map<Long, Long> edgeTo = new HashMap<>();
+        Set<Long> marked = new HashSet<>();
         Comparator<Long> cmp = new Comparator<Long>() {
             @Override
             public int compare(Long o1, Long o2) {
@@ -43,43 +44,45 @@ public class Router {
                         < passedDistance.get(o2) + estimateDistance.get(o2)) {
                     return -1;
                 } else if (passedDistance.get(o1) + estimateDistance.get(o1)
-                        > passedDistance.get(o2) + estimateDistance.get(o2)) {
+                        == passedDistance.get(o2) + estimateDistance.get(o2)) {
+                    return  0;
+                } else {
                     return 1;
                 }
-                return 0;
             }
         };
-        Set<Long> marked = new HashSet<>();
-        PriorityQueue<Long> pq = new PriorityQueue<>(cmp);
-        passedDistance.replace(startId, 0.0);
-        pq.add(startId);
-        long curr = pq.poll();
-        marked.add(curr);
-        Map<Long, Long> edgeTo = new HashMap<>();
-        while (!g.vertex.get(curr).equals(end)) {
-            for (long id : g.adjacent(curr)) {
-                if (passedDistance.get(curr) + g.distance(curr, id) < passedDistance.get(id)) {
-                    passedDistance.replace(id, passedDistance.get(curr) + g.distance(curr, id));
-                    edgeTo.put(id, curr);
+        PriorityQueue<Long> pq = new PriorityQueue<Long>(cmp);
+
+        passedDistance.replace(s.id(), 0.0);
+        pq.add(s.id());
+        long vID = pq.poll();
+        marked.add(vID);
+        while (vID != t.id()) {
+            for (long wID : g.adjacent(vID)) {
+                if (passedDistance.get(vID) + g.distance(vID, wID) < passedDistance.get(wID)) {
+                    passedDistance.replace(wID, passedDistance.get(vID) + g.distance(wID, vID));
+                    edgeTo.put(wID, vID);
                 }
-                pq.add(id);
+                pq.add(wID);
             }
-            curr = pq.poll();
-            while (marked.contains(curr)) {
-                curr = pq.poll();
+            vID = pq.poll();
+            while (marked.contains(vID)) {
+                vID = pq.poll();
             }
-            marked.add(curr);
+            marked.add(vID);
         }
-        long tempId = endId;
-        tempStack.add(tempId);
-        while (tempId != start.id()) {
-            tempStack.add(edgeTo.get(tempId));
-            tempId = edgeTo.get(tempId);
+        Stack<Long> stack = new Stack<>();
+
+        Long id = t.id();
+        stack.add(id);
+        while (id != s.id()) {
+            stack.add(edgeTo.get(id));
+            id = edgeTo.get(id);
         }
-        while (!tempStack.empty()) {
-            result.add(tempStack.pop());
+        while (!stack.empty()) {
+            returnList.add(stack.pop());
         }
-        return result;
+        return returnList;
     }
 
     /**
