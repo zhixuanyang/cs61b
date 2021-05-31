@@ -6,7 +6,9 @@ import java.io.IOException;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
-import java.util.ArrayList;
+import java.util.Map;
+import java.util.HashMap;
+import java.util.HashSet;
 
 /**
  * Graph for storing all of the intersection (vertex) and road (edge) information.
@@ -26,12 +28,26 @@ public class GraphDB {
      * You do not need to modify this constructor, but you're welcome to do so.
      * @param dbPath Path to the XML file to be parsed.
      */
+    Map<Long, Node> vertex = new HashMap<>();
+
+    Map<Long, Edge> edges = new HashMap<>();
+
+    Map<String, Long> way = new HashMap<>();
+
+
+    public void addVertex(Node v) {
+        vertex.put(v.id(), v);
+    }
+
+    public void addEdge(Edge e) {
+        edges.put(e.id(), e);
+    }
+
+
     public GraphDB(String dbPath) {
         try {
             File inputFile = new File(dbPath);
             FileInputStream inputStream = new FileInputStream(inputFile);
-            // GZIPInputStream stream = new GZIPInputStream(inputStream);
-
             SAXParserFactory factory = SAXParserFactory.newInstance();
             SAXParser saxParser = factory.newSAXParser();
             GraphBuildingHandler gbh = new GraphBuildingHandler(this);
@@ -57,7 +73,13 @@ public class GraphDB {
      *  we can reasonably assume this since typically roads are connected.
      */
     private void clean() {
-        // TODO: Your code here.
+        HashSet<Long> removeItemIDs = new HashSet<>();
+        for (Node v: vertex.values()) {
+            if (v.adj().isEmpty()) {
+                removeItemIDs.add(v.id());
+            }
+        }
+        vertex.keySet().removeAll(removeItemIDs);
     }
 
     /**
@@ -65,8 +87,7 @@ public class GraphDB {
      * @return An iterable of id's of all vertices in the graph.
      */
     Iterable<Long> vertices() {
-        //YOUR CODE HERE, this currently returns only an empty list.
-        return new ArrayList<Long>();
+        return vertex.keySet();
     }
 
     /**
@@ -75,7 +96,7 @@ public class GraphDB {
      * @return An iterable of the ids of the neighbors of v.
      */
     Iterable<Long> adjacent(long v) {
-        return null;
+        return vertex.get(v).adj();
     }
 
     /**
@@ -136,7 +157,16 @@ public class GraphDB {
      * @return The id of the node in the graph closest to the target.
      */
     long closest(double lon, double lat) {
-        return 0;
+        double min = Double.MAX_VALUE;
+        long tempId = 0;
+        for (Node e : vertex.values()) {
+            double temp = distance(e.lon(), e.lat(), lon, lat);
+            if (temp < min) {
+                min = temp;
+                tempId = e.id();
+            }
+        }
+        return tempId;
     }
 
     /**
@@ -145,7 +175,7 @@ public class GraphDB {
      * @return The longitude of the vertex.
      */
     double lon(long v) {
-        return 0;
+        return vertex.get(v).lon();
     }
 
     /**
@@ -154,6 +184,39 @@ public class GraphDB {
      * @return The latitude of the vertex.
      */
     double lat(long v) {
-        return 0;
+        return vertex.get(v).lat();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || o.getClass() != this.getClass()) {
+            return false;
+        }
+
+        GraphDB other = (GraphDB) o;
+        if (this.vertex.size() != other.vertex.size()) {
+            return false;
+        }
+
+        if (this.edges.size() != other.edges.size()) {
+            return false;
+        }
+
+        for (long id : this.vertex.keySet()) {
+            if (!other.vertex.containsKey(id)) {
+                return false;
+            }
+        }
+        for (long id : this.edges.keySet()) {
+            if (!other.edges.containsKey(id)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        return super.hashCode();
     }
 }
