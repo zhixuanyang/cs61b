@@ -1,7 +1,15 @@
+import java.util.Stack;
 import java.util.List;
-import java.util.Objects;
+import java.util.PriorityQueue;
+import java.util.Set;
+import java.util.HashSet;
+import java.util.HashMap;
 import java.util.regex.Matcher;
+import java.util.ArrayList;
+import java.util.Map;
 import java.util.regex.Pattern;
+import java.util.Objects;
+import java.util.Comparator;
 
 /**
  * This class provides a shortestPath method for finding routes between two points
@@ -12,20 +20,66 @@ import java.util.regex.Pattern;
  * down to the priority you use to order your vertices.
  */
 public class Router {
-    /**
-     * Return a List of longs representing the shortest path from the node
-     * closest to a start location and the node closest to the destination
-     * location.
-     * @param g The graph to use.
-     * @param stlon The longitude of the start location.
-     * @param stlat The latitude of the start location.
-     * @param destlon The longitude of the destination location.
-     * @param destlat The latitude of the destination location.
-     * @return A list of node id's in the order visited on the shortest path.
-     */
+
     public static List<Long> shortestPath(GraphDB g, double stlon, double stlat,
                                           double destlon, double destlat) {
-        return null; // FIXME
+        List<Long> result = new ArrayList<>();
+        Stack<Long> tempStack = new Stack<>();
+        Map<Long, Double> passedDistance = new HashMap<>();
+        Map<Long, Double> estimateDistance = new HashMap<>();
+        long startId = g.closest(stlon, stlat);
+        Node start = g.vertex.get(startId);
+        long endId = g.closest(destlon, destlat);
+        Node end = g.vertex.get(endId);
+        for (long id : g.vertex.keySet()) {
+            passedDistance.put(id, Double.POSITIVE_INFINITY);
+            estimateDistance.put(id, g.distance(id, end.id()));
+        }
+        Set<Long> makred = new HashSet<>();
+        Comparator<Long> cmp = new Comparator<Long>() {
+            @Override
+            public int compare(Long o1, Long o2) {
+                if (passedDistance.get(o1) + estimateDistance.get(o1)
+                        < passedDistance.get(o2) + estimateDistance.get(o2)) {
+                    return -1;
+                } else if (passedDistance.get(o1) + estimateDistance.get(o1)
+                        > passedDistance.get(o2) + estimateDistance.get(o2)) {
+                    return 1;
+                }
+                return 0;
+            }
+        };
+        Set<Long> marked = new HashSet<>();
+        PriorityQueue<Long> pq = new PriorityQueue<>(cmp);
+        passedDistance.replace(startId, 0.0);
+        pq.add(startId);
+        long curr = pq.poll();
+        marked.add(curr);
+        Map<Long, Long> edgeTo = new HashMap<>();
+        while (!g.vertex.get(curr).equals(end)) {
+            for (long id : g.adjacent(curr)) {
+                if (passedDistance.get(curr) + g.distance(curr, id) < passedDistance.get(id)) {
+                    passedDistance.replace(id, passedDistance.get(curr) + g.distance(curr, id));
+                    edgeTo.put(id, curr);
+                }
+                pq.add(id);
+            }
+            curr = pq.poll();
+            while (marked.contains(curr)) {
+                curr = pq.poll();
+            }
+            marked.add(curr);
+        }
+        long tempId = endId;
+        tempStack.add(tempId);
+        while (tempId != start.id()) {
+            tempStack.add(edgeTo.get(tempId));
+            tempId = edgeTo.get(tempId);
+        }
+        while (!tempStack.empty()) {
+            result.add(tempStack.pop());
+        }
+        return result;
     }
 
     /**
