@@ -20,12 +20,9 @@ public class Router {
 
     public static List<Long> shortestPath(GraphDB g, double stlon, double stlat,
                                           double destlon, double destlat) {
-        //获取最近的节点
         long startNode = g.closest(stlon, stlat);
         long endNode = g.closest(destlon, destlat);
         List<Long> movePath = new LinkedList<>();
-
-        //建立TrackNode类，追踪每个节点的父节点，便于寻找最短路径
         class TrackNode {
             long id;
             TrackNode parent;
@@ -39,8 +36,6 @@ public class Router {
                 this.parent = parent;
             }
         }
-
-        //最小优先队列所用的比较器
         class NodeComparator implements Comparator<TrackNode> {
             @Override
             public int compare(TrackNode first, TrackNode second) {
@@ -49,10 +44,8 @@ public class Router {
         }
 
         PriorityQueue<TrackNode> pq = new PriorityQueue<>(new NodeComparator());
-        //起始节点，其父节点为空
         TrackNode currentNode = new TrackNode(startNode, null);
         Set<Long> marked = new HashSet<>();
-        //Java中实现A*算法不能用递归
         while (!(currentNode.id == endNode)) {
             for (long nextNode: g.adjacent(currentNode.id)) {
                 if (currentNode.parent == null || !(nextNode == currentNode.parent.id)
@@ -61,7 +54,7 @@ public class Router {
                 }
             }
             currentNode = pq.poll();
-            marked.add(currentNode.id); //重要！！！将考虑过的节点做标记，这个节点已经是最短路径，不再重复计算
+            marked.add(currentNode.id);
         }
         for (TrackNode n = currentNode; n != null; n = n.parent) {
             movePath.add(0, n.id);
