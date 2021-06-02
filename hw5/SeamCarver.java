@@ -1,235 +1,67 @@
-import edu.princeton.cs.algs4.Picture;
-import java.util.Stack;
 import java.awt.Color;
+import edu.princeton.cs.algs4.Picture;
 
 public class SeamCarver {
+    private Picture picture;
     private int width;
     private int height;
-    private Picture picture;
-    private boolean horizontal = false;
+    private boolean isVertical = true;
 
     public SeamCarver(Picture picture) {
-        width = picture.width();
-        height = picture.height();
         this.picture = new Picture(picture);
+        this.width = picture.width();
+        this.height = picture.height();
     }
 
+    // current picture
     public Picture picture() {
         return new Picture(picture);
     }
 
+    // width of current picture
     public int width() {
         return width;
     }
 
+    // height of current picture
     public int height() {
         return height;
     }
 
-    private double calculateRGB(Color temp1, Color temp2) {
-        double temp;
-        temp = (temp1.getRed() - temp2.getRed()) * (temp1.getRed() - temp2.getRed());
-        temp += (temp1.getBlue() - temp2.getBlue()) * (temp1.getBlue() - temp2.getBlue());
-        temp += (temp1.getGreen() - temp2.getGreen()) * (temp1.getGreen() - temp2.getGreen());
-        return temp;
-    }
+    // energy of pixel at column x and row y
     public double energy(int x, int y) {
-        if (x >= width() || x < 0 || y >= height() || y < 0) {
-            throw new IndexOutOfBoundsException();
-        }
-        Color temp1;
-        Color temp2;
-        double column;
-        double row;
-        if (width() == 1 & height() == 1) {
-            temp1 = picture.get(x, y);
-            temp2 = picture.get(x, y);
-            column = calculateRGB(temp1, temp2);
-            row = calculateRGB(temp1, temp2);
-        } else if (width() == 1) {
-            temp1 = picture.get(x, y);
-            temp2 = picture.get(x, y);
-            column = calculateRGB(temp1, temp2);
-            row = getRow(x, y);
-        } else if (height() == 1) {
-            temp1 = picture.get(x, y);
-            temp2 = picture.get(x, y);
-            row = calculateRGB(temp1, temp2);
-            if (!horizontal) {
-                if (x == 0) {
-                    temp1 = picture.get(x + 1, y);
-                    temp2 = picture.get(width() - 1, y);
-                    column = calculateRGB(temp1, temp2);
-                } else if (x == width() - 1) {
-                    temp1 = picture.get(0, y);
-                    temp2 = picture.get(x - 1, y);
-                    column = calculateRGB(temp1, temp2);
-                } else {
-                    temp1 = picture.get(x + 1, y);
-                    temp2 = picture.get(x - 1, y);
-                    column = calculateRGB(temp1, temp2);
-                }
-            } else {
-                if (x == 0) {
-                    temp1 = picture.get(y, x + 1);
-                    temp2 = picture.get(y, width() - 1);
-                    column = calculateRGB(temp1, temp2);
-                } else if (x == width() - 1) {
-                    temp1 = picture.get(y, 0);
-                    temp2 = picture.get(y, x - 1);
-                    column = calculateRGB(temp1, temp2);
-                } else {
-                    temp1 = picture.get(y, x + 1);
-                    temp2 = picture.get(y, x - 1);
-                    column = calculateRGB(temp1, temp2);
-                }
-            }
+        Color up, down, left, right;
+        if (isVertical) {
+            up = y > 0 ? picture.get(x, y - 1) : picture.get(x, height - 1);
+            down = y < height - 1 ? picture.get(x, y + 1) : picture.get(x, 0);
+            left = x > 0 ? picture.get(x - 1, y) : picture.get(width - 1, y);
+            right = x < width - 1 ? picture.get(x + 1, y) : picture.get(0, y);
         } else {
-            column = getColumn(x, y);
-            row = getRow(x, y);
+            up = x > 0 ? picture.get(x - 1, y) : picture.get(height - 1, y);
+            down = x < height - 1 ? picture.get(x + 1, y) : picture.get(0, y);
+            left = y > 0 ? picture.get(x, y - 1) : picture.get(x, width - 1);
+            right = y < width - 1 ? picture.get(x, y + 1) : picture.get(x, 0);
         }
-        return column + row;
+
+        int rx = left.getRed() - right.getRed();
+        int gx = left.getGreen() - right.getGreen();
+        int bx = left.getBlue() - right.getBlue();
+        int ry = up.getRed() - down.getRed();
+        int gy = up.getGreen() - down.getGreen();
+        int by = up.getBlue() - down.getBlue();
+
+        return rx * rx + gx * gx + bx * bx + ry * ry + gy * gy + by * by;
     }
 
-    private double getRow(int x, int y) {
-        Color temp1;
-        Color temp2;
-        double row;
-        if (!horizontal) {
-            if (y == 0) {
-                temp1 = picture.get(x, y + 1);
-                temp2 = picture.get(x, height() - 1);
-                row = calculateRGB(temp1, temp2);
-            } else if (y == height() - 1) {
-                temp1 = picture.get(x, 0);
-                temp2 = picture.get(x, y - 1);
-                row = calculateRGB(temp1, temp2);
-            } else {
-                temp1 = picture.get(x, y + 1);
-                temp2 = picture.get(x, y - 1);
-                row = calculateRGB(temp1, temp2);
-            }
-        } else {
-            if (y == 0) {
-                temp1 = picture.get(y + 1, x);
-                temp2 = picture.get(height() - 1, x);
-                row = calculateRGB(temp1, temp2);
-            } else if (y == height() - 1) {
-                temp1 = picture.get(0, x);
-                temp2 = picture.get(y - 1, x);
-                row = calculateRGB(temp1, temp2);
-            } else {
-                temp1 = picture.get(y + 1, x);
-                temp2 = picture.get(y - 1, x);
-                row = calculateRGB(temp1, temp2);
-            }
-        }
-        return row;
+    // sequence of indices for horizontal seam
+    public int[] findHorizontalSeam() {
+        isVertical = false;
+        swap();
+        int[] res = findVerticalSeam();
+        swap();
+        isVertical = true;
+        return res;
     }
-
-    private double getColumn(int x, int y) {
-        Color temp1;
-        Color temp2;
-        double column;
-        if (!horizontal) {
-            if (x == 0) {
-                temp1 = picture.get(x + 1, y);
-                temp2 = picture.get(width() - 1, y);
-                column = calculateRGB(temp1, temp2);
-            } else if (x == width() - 1) {
-                temp1 = picture.get(0, y);
-                temp2 = picture.get(x - 1, y);
-                column = calculateRGB(temp1, temp2);
-            } else {
-                temp1 = picture.get(x + 1, y);
-                temp2 = picture.get(x - 1, y);
-                column = calculateRGB(temp1, temp2);
-            }
-        } else {
-            if (x == 0) {
-                temp1 = picture.get(y, x + 1);
-                temp2 = picture.get(y, width() - 1);
-                column = calculateRGB(temp1, temp2);
-            } else if (x == width() - 1) {
-                temp1 = picture.get(y, 0);
-                temp2 = picture.get(y, x - 1);
-                column = calculateRGB(temp1, temp2);
-            } else {
-                temp1 = picture.get(y, x + 1);
-                temp2 = picture.get(y, x - 1);
-                column = calculateRGB(temp1, temp2);
-            }
-        }
-        return column;
-    }
-    public int[] findVerticalSeam() {
-        double [][] temp = new double[width()][height()];
-        Stack<Integer> store = new Stack<>();
-        for (int i = 0; i < width(); i++) {
-            temp[i][0] = energy(i, 0);
-        }
-        if (width() == 1 & height() == 1) {
-            temp = temp;
-        } else if (width() == 1) {
-            for (int j = 1; j < height(); j++) {
-                temp[0][j] = energy(0, j) + temp[0][j - 1];
-            }
-        } else if (height() == 1) {
-            temp = temp;
-        } else {
-            for (int j = 1; j < height(); j++) {
-                for (int i = 0; i < width(); i++) {
-                    if (i == 0) {
-                        temp[i][j] = energy(i, j) + Math.min(temp[i][j - 1], temp[i + 1][j - 1]);
-                    } else if (i == width() - 1) {
-                        temp[i][j] = energy(i, j) + Math.min(temp[i][j - 1], temp[i - 1][j - 1]);
-                    } else {
-                        temp[i][j] = energy(i, j) + Math.min(Math.min(temp[i - 1][j - 1],
-                                temp[i][j - 1]),
-                                temp[i + 1][j - 1]);
-                    }
-                }
-            }
-        }
-        double min = Double.MAX_VALUE;
-        int index = 0;
-        for (int i = 0; i < width(); i++) {
-            if (temp[i][height() - 1] < min) {
-                min = temp[i][height() - 1];
-                index = i;
-            }
-        }
-        store.push(index);
-        for (int j = height() - 2; j > -1; j--) {
-            min = temp[index][j];
-            int tempindex = index;
-            if (index == 0) {
-                if (temp[index + 1][j] < min) {
-                    tempindex = index + 1;
-                }
-            } else if (index == width() - 1) {
-                if (temp[index - 1][j] < min) {
-                    tempindex = index - 1;
-                }
-            } else {
-                if (temp[index - 1][j] < min) {
-                    min = temp[index - 1][j];
-                    tempindex = index - 1;
-                }
-                if (temp[index + 1][j] < min) {
-                    tempindex = index + 1;
-                }
-            }
-            index = tempindex;
-            store.push(index);
-        }
-        int[] result = new int[store.size()];
-        for (int i = 0; i < result.length; i++) {
-            result[i] = store.pop();
-        }
-        return result;
-    }
-
 
     private void swap() {
         int temp = width;
@@ -237,27 +69,79 @@ public class SeamCarver {
         height = temp;
     }
 
-    public int[] findHorizontalSeam() {
-        swap();
-        horizontal = true;
-        int[] result = findVerticalSeam();
-        swap();
-        horizontal = false;
-        return result;
+    // sequence of indices for vertical seam
+    public int[] findVerticalSeam() {
+        int[][] path = new int[width][height];
+        double[][] cost = new double[width][height];
+        for (int i = 0; i < width; i++) {
+            double e = isVertical ? energy(i, 0) : energy(0, i);
+            cost[i][0] = e;
+            path[i][height - 1] = i;
+        }
+
+        for (int j = 1; j < height; j++) {
+            for (int i = 0; i < width; i++) {
+                double e = isVertical ? energy(i, j) : energy(j, i);
+                cost[i][j] = e + getMinCost(i, j, path, cost);
+            }
+        }
+
+        int[] res = new int[height];
+        double min = Double.MAX_VALUE;
+        int minPos = 0;
+        for (int i = 0; i < width; i++) {
+            if (cost[i][height - 1] < min) {
+                min = cost[i][height - 1];
+                minPos = i;
+            }
+        }
+
+        for (int j = height - 1; j >= 0; j--) {
+            res[j] = path[minPos][j];
+            minPos = res[j];
+        }
+        return res;
     }
 
+    private double getMinCost(int i, int j, int[][] path, double[][] cost) {
+        double[] v = new double[3];
+        v[1] = cost[i][j - 1];
+        if (i > 0) {
+            v[0] = cost[i - 1][j - 1];
+        } else {
+            v[0] = Double.MAX_VALUE;
+        }
+        if (i < width - 1) {
+            v[2] = cost[i + 1][j - 1];
+        } else {
+            v[2] = Double.MAX_VALUE;
+        }
+        double res = Double.MAX_VALUE;
+        int pos = 0;
+        for (int m = 0; m < 3; m++) {
+            if (v[m] < res) {
+                res = v[m];
+                pos = m;
+            }
+        }
+        path[i][j - 1] = pos + i - 1;
+        return res;
+    }
+
+    // remove horizontal seam from picture
     public void removeHorizontalSeam(int[] seam) {
-        if (seam.length != width() || !isValidSeam(seam)) {
+        if (seam.length != width || !isValidSeam(seam)) {
             throw new IllegalArgumentException();
         }
-        SeamRemover.removeHorizontalSeam(this.picture, seam);
+        SeamRemover.removeHorizontalSeam(picture, seam);
     }
 
+    // remove vertical seam from picture
     public void removeVerticalSeam(int[] seam) {
-        if (seam.length != height() || !isValidSeam(seam)) {
+        if (seam.length != height || !isValidSeam(seam)) {
             throw new IllegalArgumentException();
         }
-        SeamRemover.removeVerticalSeam(this.picture, seam);
+        SeamRemover.removeVerticalSeam(picture, seam);
     }
 
     private boolean isValidSeam(int[] seam) {
