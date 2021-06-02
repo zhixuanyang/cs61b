@@ -1,7 +1,10 @@
 package creatures;
-import huglife.*;
-
+import huglife.HugLifeUtils;
+import huglife.Creature;
+import huglife.Action;
+import huglife.Direction;
 import java.awt.Color;
+import huglife.Occupant;
 import java.util.Map;
 import java.util.List;
 
@@ -16,7 +19,7 @@ public class Plip extends Creature {
     private int g;
     /** blue color. */
     private int b;
-
+    private double moveProbability = 0.5;
     /** creates plip with energy equal to E. */
     public Plip(double e) {
         super("plip");
@@ -90,7 +93,19 @@ public class Plip extends Creature {
      *  for an example to follow.
      */
     public Action chooseAction(Map<Direction, Occupant> neighbors) {
+        List<Direction> empties = getNeighborsOfType(neighbors, "empty");
+        List<Direction> clorus = getNeighborsOfType(neighbors, "clorus");
+        if (empties.size() == 0) {
+            return new Action(Action.ActionType.STAY);
+        } else if (energy() > 1.0) {
+            Direction moveDir = HugLifeUtils.randomEntry(empties);
+            return new Action(Action.ActionType.REPLICATE, moveDir);
+        } else if (clorus.size() >= 1) {
+            if (HugLifeUtils.random() >= moveProbability) {
+                Direction moveDir = HugLifeUtils.randomEntry(empties);
+                return new Action(Action.ActionType.MOVE, moveDir);
+            }
+        }
         return new Action(Action.ActionType.STAY);
     }
-
 }

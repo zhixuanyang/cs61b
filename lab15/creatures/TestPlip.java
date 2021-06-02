@@ -2,15 +2,12 @@ package creatures;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
-import java.nio.channels.Pipe;
 import java.util.HashMap;
 import java.awt.Color;
 import huglife.Direction;
 import huglife.Action;
 import huglife.Occupant;
 import huglife.Impassible;
-import huglife.Empty;
-
 /** Tests the plip class   
  *  @authr FIXME
  */
@@ -44,7 +41,7 @@ public class TestPlip {
         assertEquals(1.0, temp.energy(), 0.01);
     }
 
-    //@Test
+    @Test
     public void testChoose() {
         Plip p = new Plip(1.2);
         HashMap<Direction, Occupant> surrounded = new HashMap<Direction, Occupant>();
