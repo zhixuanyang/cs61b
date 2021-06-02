@@ -50,35 +50,7 @@ public class SeamCarver {
             temp1 = picture.get(x, y);
             temp2 = picture.get(x, y);
             column = calculateRGB(temp1, temp2);
-            if (!horizontal) {
-                if (y == 0) {
-                    temp1 = picture.get(x, y + 1);
-                    temp2 = picture.get(x, height() - 1);
-                    row = calculateRGB(temp1, temp2);
-                } else if (y == height() - 1) {
-                    temp1 = picture.get(x, 0);
-                    temp2 = picture.get(x, y - 1);
-                    row = calculateRGB(temp1, temp2);
-                } else {
-                    temp1 = picture.get(x, y + 1);
-                    temp2 = picture.get(x, y - 1);
-                    row = calculateRGB(temp1, temp2);
-                }
-            } else {
-                if (y == 0) {
-                    temp1 = picture.get(y + 1, x);
-                    temp2 = picture.get(height() - 1, x);
-                    row = calculateRGB(temp1, temp2);
-                } else if (y == height() - 1) {
-                    temp1 = picture.get(0, x);
-                    temp2 = picture.get(y - 1, x);
-                    row = calculateRGB(temp1, temp2);
-                } else {
-                    temp1 = picture.get(y + 1, x);
-                    temp2 = picture.get(y - 1, x);
-                    row = calculateRGB(temp1, temp2);
-                }
-            }
+            row = getRow(x, y);
         } else if (height() == 1) {
             temp1 = picture.get(x, y);
             temp2 = picture.get(x, y);
@@ -113,81 +85,109 @@ public class SeamCarver {
                 }
             }
         } else {
-            if (!horizontal) {
-                if (x == 0) {
-                    temp1 = picture.get(x + 1, y);
-                    temp2 = picture.get(width() - 1, y);
-                    column = calculateRGB(temp1, temp2);
-                } else if (x == width() - 1) {
-                    temp1 = picture.get(0, y);
-                    temp2 = picture.get(x - 1, y);
-                    column = calculateRGB(temp1, temp2);
-                } else {
-                    temp1 = picture.get(x + 1, y);
-                    temp2 = picture.get(x - 1, y);
-                    column = calculateRGB(temp1, temp2);
-                }
-                if (y == 0) {
-                    temp1 = picture.get(x, y + 1);
-                    temp2 = picture.get(x, height() - 1);
-                    row = calculateRGB(temp1, temp2);
-                } else if (y == height() - 1) {
-                    temp1 = picture.get(x, 0);
-                    temp2 = picture.get(x, y - 1);
-                    row = calculateRGB(temp1, temp2);
-                } else {
-                    temp1 = picture.get(x, y + 1);
-                    temp2 = picture.get(x, y - 1);
-                    row = calculateRGB(temp1, temp2);
-                }
-            } else {
-                if (x == 0) {
-                    temp1 = picture.get(y, x + 1);
-                    temp2 = picture.get(y, width() - 1);
-                    column = calculateRGB(temp1, temp2);
-                } else if (x == width() - 1) {
-                    temp1 = picture.get(y, 0);
-                    temp2 = picture.get(y, x - 1);
-                    column = calculateRGB(temp1, temp2);
-                } else {
-                    temp1 = picture.get(y, x + 1);
-                    temp2 = picture.get(y, x - 1);
-                    column = calculateRGB(temp1, temp2);
-                }
-                if (y == 0) {
-                    temp1 = picture.get(y + 1, x);
-                    temp2 = picture.get(height() - 1, x);
-                    row = calculateRGB(temp1, temp2);
-                } else if (y == height() - 1) {
-                    temp1 = picture.get(0, x);
-                    temp2 = picture.get(y - 1, x);
-                    row = calculateRGB(temp1, temp2);
-                } else {
-                    temp1 = picture.get(y + 1, x);
-                    temp2 = picture.get(y - 1, x);
-                    row = calculateRGB(temp1, temp2);
-                }
-            }
+            column = getColumn(x, y);
+            row = getRow(x, y);
         }
         return column + row;
     }
 
+    private double getRow(int x, int y) {
+        Color temp1;
+        Color temp2;
+        double row;
+        if (!horizontal) {
+            if (y == 0) {
+                temp1 = picture.get(x, y + 1);
+                temp2 = picture.get(x, height() - 1);
+                row = calculateRGB(temp1, temp2);
+            } else if (y == height() - 1) {
+                temp1 = picture.get(x, 0);
+                temp2 = picture.get(x, y - 1);
+                row = calculateRGB(temp1, temp2);
+            } else {
+                temp1 = picture.get(x, y + 1);
+                temp2 = picture.get(x, y - 1);
+                row = calculateRGB(temp1, temp2);
+            }
+        } else {
+            if (y == 0) {
+                temp1 = picture.get(y + 1, x);
+                temp2 = picture.get(height() - 1, x);
+                row = calculateRGB(temp1, temp2);
+            } else if (y == height() - 1) {
+                temp1 = picture.get(0, x);
+                temp2 = picture.get(y - 1, x);
+                row = calculateRGB(temp1, temp2);
+            } else {
+                temp1 = picture.get(y + 1, x);
+                temp2 = picture.get(y - 1, x);
+                row = calculateRGB(temp1, temp2);
+            }
+        }
+        return row;
+    }
+
+    private double getColumn(int x, int y) {
+        Color temp1;
+        Color temp2;
+        double column;
+        if (!horizontal) {
+            if (x == 0) {
+                temp1 = picture.get(x + 1, y);
+                temp2 = picture.get(width() - 1, y);
+                column = calculateRGB(temp1, temp2);
+            } else if (x == width() - 1) {
+                temp1 = picture.get(0, y);
+                temp2 = picture.get(x - 1, y);
+                column = calculateRGB(temp1, temp2);
+            } else {
+                temp1 = picture.get(x + 1, y);
+                temp2 = picture.get(x - 1, y);
+                column = calculateRGB(temp1, temp2);
+            }
+        } else {
+            if (x == 0) {
+                temp1 = picture.get(y, x + 1);
+                temp2 = picture.get(y, width() - 1);
+                column = calculateRGB(temp1, temp2);
+            } else if (x == width() - 1) {
+                temp1 = picture.get(y, 0);
+                temp2 = picture.get(y, x - 1);
+                column = calculateRGB(temp1, temp2);
+            } else {
+                temp1 = picture.get(y, x + 1);
+                temp2 = picture.get(y, x - 1);
+                column = calculateRGB(temp1, temp2);
+            }
+        }
+        return column;
+    }
     public int[] findVerticalSeam() {
         double [][] temp = new double[width()][height()];
         Stack<Integer> store = new Stack<>();
         for (int i = 0; i < width(); i++) {
             temp[i][0] = energy(i, 0);
         }
-        for (int j = 1; j < height(); j++) {
-            for (int i = 0; i < width(); i++) {
-                if (i == 0) {
-                    temp[i][j] = energy(i, j) + Math.min(temp[i][j - 1], temp[i + 1][j - 1]);
-                } else if (i == width() - 1) {
-                    temp[i][j] = energy(i, j) + Math.min(temp[i][j - 1], temp[i - 1][j - 1]);
-                } else {
-                    temp[i][j] = energy(i, j) + Math.min(Math.min(temp[i - 1][j - 1],
-                            temp[i][j - 1]),
-                            temp[i + 1][j - 1]);
+        if (width() == 1 & height() == 1) {
+            temp = temp;
+        } else if (width() == 1) {
+            for (int j = 1; j < height(); j++) {
+                temp[0][j] = energy(0, j) + temp[0][j - 1];
+            }
+        } else if (height() == 1) {
+            temp = temp;
+        } else {
+            for (int j = 1; j < height(); j++) {
+                for (int i = 0; i < width(); i++) {
+                    if (i == 0) {
+                        temp[i][j] = energy(i, j) + Math.min(temp[i][j - 1], temp[i + 1][j - 1]);
+                    } else if (i == width() - 1) {
+                        temp[i][j] = energy(i, j) + Math.min(temp[i][j - 1], temp[i - 1][j - 1]);
+                    } else {
+                        temp[i][j] = energy(i, j) + Math.min(Math.min(temp[i - 1][j - 1],
+                                temp[i][j - 1]),
+                                temp[i + 1][j - 1]);
+                    }
                 }
             }
         }
@@ -229,6 +229,7 @@ public class SeamCarver {
         }
         return result;
     }
+
 
     private void swap() {
         int temp = width;
