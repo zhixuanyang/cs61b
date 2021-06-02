@@ -1,116 +1,97 @@
 import java.io.Serializable;
-import java.util.Collections;
-import java.util.Map.Entry;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.LinkedHashMap;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Comparator;
 import java.util.HashMap;
-import edu.princeton.cs.algs4.MinPQ;
+import java.util.PriorityQueue;
 public class BinaryTrie implements Serializable {
-    private static int count;
-    Map<Character, BitSequence> codingtable;
-    Map<BitSequence, Character> codingtablereverse;
-    private int length = Integer.MIN_VALUE;
-    private Node root;
-    private class Node implements Comparable {
+    private class Node implements Serializable {
         private char ch;
-        private int freq;
+        private double freq;
         private Node left, right;
-        Node(char ch, int freq, Node left, Node right) {
+        Node(char ch, double freq, Node left, Node right) {
             this.ch = ch;
             this.freq = freq;
             this.left = left;
             this.right = right;
         }
-        private boolean isLeaf() {
-            assert ((left == null) && (right == null)) || ((left != null) && (right != null));
-            return (left == null) && (right == null);
-        }
-        public int compareTo(Object o) {
-            Node that = (Node) o;
-            return this.freq - that.freq;
-        }
     }
-    private Node buildTrie(Map<Character, Integer> frequencyTable) {
-        MinPQ<Node> pq = new MinPQ<>();
-        for (Character c : frequencyTable.keySet()) {
-            pq.insert(new Node(c, frequencyTable.get(c), null, null));
-        }
-        while (pq.size() > 1) {
-            Node left = pq.delMin();
-            Node right = pq.delMin();
-            Node parent = new Node('\0', left.freq + right.freq, left, right);
-            pq.insert(parent);
-        }
-        return pq.delMin();
-    }
+
+    private Node root;
+
+    private Map<Character, BitSequence> returnMap;
+
+    private StringBuilder bitSequeneceOfChar = new StringBuilder();
 
     public BinaryTrie(Map<Character, Integer> frequencyTable) {
-        root = buildTrie(frequencyTable);
-        String[] stringtable = new String[frequencyTable.size()];
-        count = frequencyTable.size() - 1;
-        buildCode(stringtable, root, "");
-        Map<Character, Integer> sorted = sortByValue(frequencyTable);
-        codingtable = new HashMap<>();
-        codingtablereverse = new HashMap<>();
-        int temp = stringtable.length - 1;
-        for (Character key : sorted.keySet()) {
-            if (stringtable[temp].length() > length) {
-                length = stringtable[temp].length();
-            }
-            codingtable.put(key, new BitSequence(stringtable[temp]));
-            codingtablereverse.put(new BitSequence(stringtable[temp]), key);
-            temp -= 1;
-        }
-    }
-
-    private Map<Character, Integer> sortByValue(Map<Character, Integer> frequencyTable) {
-        List<Entry<Character, Integer>> list = new LinkedList<>(frequencyTable.entrySet());
-        Collections.sort(list, new Comparator<Entry<Character, Integer>>() {
+        Comparator<Node> cmp = new Comparator<Node>() {
             @Override
-            public int compare(Entry<Character, Integer> o1, Entry<Character, Integer> o2) {
-                return o1.getValue().compareTo(o2.getValue());
+            public int compare(Node o1, Node o2) {
+                if (o1.freq > o2.freq) {
+                    return 1;
+                } else {
+                    return -1;
+                }
             }
-        });
-        Map<Character, Integer> sorted = new LinkedHashMap<Character, Integer>();
-        for (Entry<Character, Integer> entry : list) {
-            sorted.put(entry.getKey(), entry.getValue());
+        };
+        PriorityQueue<Node> pq = new PriorityQueue<>(cmp);
+        Iterator<Character> i = frequencyTable.keySet().iterator();
+        while (i.hasNext()) {
+            char ch = i.next();
+            double freq = frequencyTable.get(ch);
+            pq.add(new Node(ch, freq, null, null));
         }
-        return sorted;
+
+        while (pq.size() > 1) {
+            Node left = pq.poll();
+            Node right = pq.poll();
+            Node parent = new Node('\0', left.freq + right.freq, left, right);
+            pq.add(parent);
+        }
+        root = pq.poll();
     }
 
-    private static void buildCode(String[] st, Node x, String s) {
-        if (!x.isLeaf()) {
-            buildCode(st, x.left, s + "0");
-            buildCode(st, x.right, s + "1");
-        } else {
-            st[count] = s;
-            count -= 1;
-        }
+    private boolean isLeaf(Node x) {
+        return (x.left == null && x.right == null);
     }
 
     public Match longestPrefixMatch(BitSequence querySequence) {
-        Node temp = root;
+        Node p = root;
         StringBuilder sb = new StringBuilder();
         for (int i = 0; i < querySequence.length(); i++) {
             int num = querySequence.bitAt(i);
             if (num == 0) {
-                temp = temp.left;
+                p = p.left;
             } else {
-                temp = temp.right;
+                p = p.right;
             }
             sb.append(num);
-            if (temp.isLeaf()) {
+            if (isLeaf(p)) {
                 break;
             }
         }
-        BitSequence longest = new BitSequence(sb.toString());
-        return new Match(longest, codingtablereverse.get(longest));
+        BitSequence bs = new BitSequence(sb.toString());
+        return new Match(bs, p.ch);
     }
 
     public Map<Character, BitSequence> buildLookupTable() {
-        return codingtable;
+        returnMap = new HashMap<>();
+        bitSequeneceOfChar = new StringBuilder();
+        traverse(root);
+        return returnMap;
+    }
+
+    private void traverse(Node x) {
+        if (isLeaf(x)) {
+            BitSequence bs = new BitSequence(bitSequeneceOfChar.toString());
+            returnMap.put(x.ch, bs);
+            return;
+        }
+        bitSequeneceOfChar.append(0);
+        traverse(x.left);
+        bitSequeneceOfChar.deleteCharAt(bitSequeneceOfChar.length() - 1);
+        bitSequeneceOfChar.append(1);
+        traverse(x.right);
+        bitSequeneceOfChar.deleteCharAt(bitSequeneceOfChar.length() - 1);
     }
 }
