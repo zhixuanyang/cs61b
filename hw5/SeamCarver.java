@@ -5,7 +5,7 @@ import java.awt.Color;
 public class SeamCarver {
     private int width;
     private int height;
-    Picture picture;
+    private Picture picture;
     private boolean horizontal = false;
 
     public SeamCarver(Picture picture) {
@@ -33,7 +33,6 @@ public class SeamCarver {
         temp += (temp1.getGreen() - temp2.getGreen()) * (temp1.getGreen() - temp2.getGreen());
         return temp;
     }
-
     public double energy(int x, int y) {
         if (x >= width() || x < 0 || y >= height() || y < 0) {
             throw new IndexOutOfBoundsException();
@@ -42,59 +41,132 @@ public class SeamCarver {
         Color temp2;
         double column;
         double row;
-        if (!horizontal) {
-            if (x == 0) {
-                temp1 = picture.get(x + 1, y);
-                temp2 = picture.get(width() - 1, y);
-                column = calculateRGB(temp1, temp2);
-            } else if (x == width() - 1) {
-                temp1 = picture.get(0, y);
-                temp2 = picture.get(x - 1, y);
-                column = calculateRGB(temp1, temp2);
+        if (width() == 1 & height() == 1) {
+            temp1 = picture.get(x, y);
+            temp2 = picture.get(x, y);
+            column = calculateRGB(temp1, temp2);
+            row = calculateRGB(temp1, temp2);
+        } else if (width() == 1) {
+            temp1 = picture.get(x, y);
+            temp2 = picture.get(x, y);
+            column = calculateRGB(temp1, temp2);
+            if (!horizontal) {
+                if (y == 0) {
+                    temp1 = picture.get(x, y + 1);
+                    temp2 = picture.get(x, height() - 1);
+                    row = calculateRGB(temp1, temp2);
+                } else if (y == height() - 1) {
+                    temp1 = picture.get(x, 0);
+                    temp2 = picture.get(x, y - 1);
+                    row = calculateRGB(temp1, temp2);
+                } else {
+                    temp1 = picture.get(x, y + 1);
+                    temp2 = picture.get(x, y - 1);
+                    row = calculateRGB(temp1, temp2);
+                }
             } else {
-                temp1 = picture.get(x + 1, y);
-                temp2 = picture.get(x - 1, y);
-                column = calculateRGB(temp1, temp2);
+                if (y == 0) {
+                    temp1 = picture.get(y + 1, x);
+                    temp2 = picture.get(height() - 1, x);
+                    row = calculateRGB(temp1, temp2);
+                } else if (y == height() - 1) {
+                    temp1 = picture.get(0, x);
+                    temp2 = picture.get(y - 1, x);
+                    row = calculateRGB(temp1, temp2);
+                } else {
+                    temp1 = picture.get(y + 1, x);
+                    temp2 = picture.get(y - 1, x);
+                    row = calculateRGB(temp1, temp2);
+                }
             }
-            if (y == 0) {
-                temp1 = picture.get(x, y + 1);
-                temp2 = picture.get(x, height() - 1);
-                row = calculateRGB(temp1, temp2);
-            } else if (y == height() - 1) {
-                temp1 = picture.get(x, 0);
-                temp2 = picture.get(x, y - 1);
-                row = calculateRGB(temp1, temp2);
+        } else if (height() == 1) {
+            temp1 = picture.get(x, y);
+            temp2 = picture.get(x, y);
+            row = calculateRGB(temp1, temp2);
+            if (!horizontal) {
+                if (x == 0) {
+                    temp1 = picture.get(x + 1, y);
+                    temp2 = picture.get(width() - 1, y);
+                    column = calculateRGB(temp1, temp2);
+                } else if (x == width() - 1) {
+                    temp1 = picture.get(0, y);
+                    temp2 = picture.get(x - 1, y);
+                    column = calculateRGB(temp1, temp2);
+                } else {
+                    temp1 = picture.get(x + 1, y);
+                    temp2 = picture.get(x - 1, y);
+                    column = calculateRGB(temp1, temp2);
+                }
             } else {
-                temp1 = picture.get(x, y + 1);
-                temp2 = picture.get(x, y - 1);
-                row = calculateRGB(temp1, temp2);
+                if (x == 0) {
+                    temp1 = picture.get(y, x + 1);
+                    temp2 = picture.get(y, width() - 1);
+                    column = calculateRGB(temp1, temp2);
+                } else if (x == width() - 1) {
+                    temp1 = picture.get(y, 0);
+                    temp2 = picture.get(y, x - 1);
+                    column = calculateRGB(temp1, temp2);
+                } else {
+                    temp1 = picture.get(y, x + 1);
+                    temp2 = picture.get(y, x - 1);
+                    column = calculateRGB(temp1, temp2);
+                }
             }
         } else {
-            if (x == 0) {
-                temp1 = picture.get(y, x + 1);
-                temp2 = picture.get(y, width() - 1);
-                column = calculateRGB(temp1, temp2);
-            } else if (x == width() - 1) {
-                temp1 = picture.get(y, 0);
-                temp2 = picture.get(y, x - 1);
-                column = calculateRGB(temp1, temp2);
+            if (!horizontal) {
+                if (x == 0) {
+                    temp1 = picture.get(x + 1, y);
+                    temp2 = picture.get(width() - 1, y);
+                    column = calculateRGB(temp1, temp2);
+                } else if (x == width() - 1) {
+                    temp1 = picture.get(0, y);
+                    temp2 = picture.get(x - 1, y);
+                    column = calculateRGB(temp1, temp2);
+                } else {
+                    temp1 = picture.get(x + 1, y);
+                    temp2 = picture.get(x - 1, y);
+                    column = calculateRGB(temp1, temp2);
+                }
+                if (y == 0) {
+                    temp1 = picture.get(x, y + 1);
+                    temp2 = picture.get(x, height() - 1);
+                    row = calculateRGB(temp1, temp2);
+                } else if (y == height() - 1) {
+                    temp1 = picture.get(x, 0);
+                    temp2 = picture.get(x, y - 1);
+                    row = calculateRGB(temp1, temp2);
+                } else {
+                    temp1 = picture.get(x, y + 1);
+                    temp2 = picture.get(x, y - 1);
+                    row = calculateRGB(temp1, temp2);
+                }
             } else {
-                temp1 = picture.get(y, x + 1);
-                temp2 = picture.get(y, x - 1);
-                column = calculateRGB(temp1, temp2);
-            }
-            if (y == 0) {
-                temp1 = picture.get(y + 1, x);
-                temp2 = picture.get(height() - 1, x);
-                row = calculateRGB(temp1, temp2);
-            } else if (y == height() - 1) {
-                temp1 = picture.get(0, x);
-                temp2 = picture.get(y - 1, x);
-                row = calculateRGB(temp1, temp2);
-            } else {
-                temp1 = picture.get(y + 1, x);
-                temp2 = picture.get(y - 1, x);
-                row = calculateRGB(temp1, temp2);
+                if (x == 0) {
+                    temp1 = picture.get(y, x + 1);
+                    temp2 = picture.get(y, width() - 1);
+                    column = calculateRGB(temp1, temp2);
+                } else if (x == width() - 1) {
+                    temp1 = picture.get(y, 0);
+                    temp2 = picture.get(y, x - 1);
+                    column = calculateRGB(temp1, temp2);
+                } else {
+                    temp1 = picture.get(y, x + 1);
+                    temp2 = picture.get(y, x - 1);
+                    column = calculateRGB(temp1, temp2);
+                }
+                if (y == 0) {
+                    temp1 = picture.get(y + 1, x);
+                    temp2 = picture.get(height() - 1, x);
+                    row = calculateRGB(temp1, temp2);
+                } else if (y == height() - 1) {
+                    temp1 = picture.get(0, x);
+                    temp2 = picture.get(y - 1, x);
+                    row = calculateRGB(temp1, temp2);
+                } else {
+                    temp1 = picture.get(y + 1, x);
+                    temp2 = picture.get(y - 1, x);
+                    row = calculateRGB(temp1, temp2);
+                }
             }
         }
         return column + row;
