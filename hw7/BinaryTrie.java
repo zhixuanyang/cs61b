@@ -10,6 +10,10 @@ import java.util.HashMap;
 import edu.princeton.cs.algs4.MinPQ;
 public class BinaryTrie implements Serializable {
     private static int count;
+    Map<Character, BitSequence> codingtable;
+    Map<BitSequence, Character> codingtablereverse;
+    private int length = Integer.MIN_VALUE;
+    private Node root;
     private class Node implements Comparable {
         private char ch;
         private int freq;
@@ -44,13 +48,22 @@ public class BinaryTrie implements Serializable {
     }
 
     public BinaryTrie(Map<Character, Integer> frequencyTable) {
-        Node root = buildTrie(frequencyTable);
+        root = buildTrie(frequencyTable);
         String[] stringtable = new String[frequencyTable.size()];
         count = frequencyTable.size() - 1;
         buildCode(stringtable, root, "");
         Map<Character, Integer> sorted = sortByValue(frequencyTable);
-        System.out.print(sorted);
-        Map<Character, Character> codingtable = new HashMap<>();
+        codingtable = new HashMap<>();
+        codingtablereverse = new HashMap<>();
+        int temp = stringtable.length - 1;
+        for (Character key : sorted.keySet()) {
+            if (stringtable[temp].length() > length) {
+                length = stringtable[temp].length();
+            }
+            codingtable.put(key, new BitSequence(stringtable[temp]));
+            codingtablereverse.put(new BitSequence(stringtable[temp]), key);
+            temp -= 1;
+        }
     }
 
     private Map<Character, Integer> sortByValue(Map<Character, Integer> frequencyTable) {
@@ -79,10 +92,25 @@ public class BinaryTrie implements Serializable {
     }
 
     public Match longestPrefixMatch(BitSequence querySequence) {
-        return null;
+        Node temp = root;
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < querySequence.length(); i++) {
+            int num = querySequence.bitAt(i);
+            if (num == 0) {
+                temp = temp.left;
+            } else {
+                temp = temp.right;
+            }
+            sb.append(num);
+            if (temp.isLeaf()) {
+                break;
+            }
+        }
+        BitSequence longest = new BitSequence(sb.toString());
+        return new Match(longest, codingtablereverse.get(longest));
     }
 
     public Map<Character, BitSequence> buildLookupTable() {
-        return null;
+        return codingtable;
     }
 }
