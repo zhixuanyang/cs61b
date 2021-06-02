@@ -11,11 +11,11 @@ public class SeamCarver {
     public SeamCarver(Picture picture) {
         width = picture.width();
         height = picture.height();
-        this.picture = picture;
+        this.picture = new Picture(picture);
     }
 
     public Picture picture() {
-        return picture;
+        return new Picture(picture);
     }
 
     public int width() {
@@ -43,26 +43,26 @@ public class SeamCarver {
         double column;
         double row;
         if (!horizontal) {
-            if (x == width() - 1) {
-                temp1 = picture.get(0, y);
-                temp2 = picture.get(x - 1, y);
-                column = calculateRGB(temp1, temp2);
-            } else if (x == 0) {
+            if (x == 0) {
                 temp1 = picture.get(x + 1, y);
                 temp2 = picture.get(width() - 1, y);
+                column = calculateRGB(temp1, temp2);
+            } else if (x == width() - 1) {
+                temp1 = picture.get(0, y);
+                temp2 = picture.get(x - 1, y);
                 column = calculateRGB(temp1, temp2);
             } else {
                 temp1 = picture.get(x + 1, y);
                 temp2 = picture.get(x - 1, y);
                 column = calculateRGB(temp1, temp2);
             }
-            if (y == height() - 1) {
-                temp1 = picture.get(x, 0);
-                temp2 = picture.get(x, y - 1);
-                row = calculateRGB(temp1, temp2);
-            } else if (y == 0) {
+            if (y == 0) {
                 temp1 = picture.get(x, y + 1);
                 temp2 = picture.get(x, height() - 1);
+                row = calculateRGB(temp1, temp2);
+            } else if (y == height() - 1) {
+                temp1 = picture.get(x, 0);
+                temp2 = picture.get(x, y - 1);
                 row = calculateRGB(temp1, temp2);
             } else {
                 temp1 = picture.get(x, y + 1);
@@ -70,26 +70,26 @@ public class SeamCarver {
                 row = calculateRGB(temp1, temp2);
             }
         } else {
-            if (x == width() - 1) {
-                temp1 = picture.get(y, 0);
-                temp2 = picture.get(y, x - 1);
-                column = calculateRGB(temp1, temp2);
-            } else if (x == 0) {
+            if (x == 0) {
                 temp1 = picture.get(y, x + 1);
                 temp2 = picture.get(y, width() - 1);
+                column = calculateRGB(temp1, temp2);
+            } else if (x == width() - 1) {
+                temp1 = picture.get(y, 0);
+                temp2 = picture.get(y, x - 1);
                 column = calculateRGB(temp1, temp2);
             } else {
                 temp1 = picture.get(y, x + 1);
                 temp2 = picture.get(y, x - 1);
                 column = calculateRGB(temp1, temp2);
             }
-            if (y == height() - 1) {
-                temp1 = picture.get(0, x);
-                temp2 = picture.get(y - 1, x);
-                row = calculateRGB(temp1, temp2);
-            } else if (y == 0) {
+            if (y == 0) {
                 temp1 = picture.get(y + 1, x);
                 temp2 = picture.get(height() - 1, x);
+                row = calculateRGB(temp1, temp2);
+            } else if (y == height() - 1) {
+                temp1 = picture.get(0, x);
+                temp2 = picture.get(y - 1, x);
                 row = calculateRGB(temp1, temp2);
             } else {
                 temp1 = picture.get(y + 1, x);
@@ -158,7 +158,7 @@ public class SeamCarver {
         return result;
     }
 
-    public void swap() {
+    private void swap() {
         int temp = width;
         width = height;
         height = temp;
